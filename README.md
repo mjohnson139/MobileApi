@@ -6,6 +6,16 @@ A proof of concept project demonstrating an embedded HTTP server pattern within 
 
 This project implements a novel approach to mobile app testing by embedding an HTTP API server directly within the mobile application. This pattern enables external QA tools and test runners to interact with the app programmatically, providing real-time state inspection, UI action automation, and comprehensive testing capabilities.
 
+## 📱 Live Demonstrations
+
+**[View Screenshots of Working PoC](poc/POC_SCREENSHOTS.md)**
+
+See the Mobile API Control Pattern in action with live screenshots showing:
+- React Native app with embedded Express.js server running
+- Real-time API responses and state management
+- Redux state visualization with performance metrics
+- Complete integration flow from UI to API
+
 ## Key Features
 
 - **Embedded HTTP Server**: Lightweight API server running within the mobile app

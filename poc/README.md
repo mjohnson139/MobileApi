@@ -43,6 +43,16 @@ Each PoC includes performance benchmarking to validate the technical requirement
 - Memory usage
 - Screenshot capture performance
 
+## Screenshots and Demos
+
+📱 **[View Live Screenshots](./POC_SCREENSHOTS.md)** - Visual demonstrations of the PoC implementations in action
+
+The screenshots document shows:
+- React Native app with embedded Express.js server
+- Redux state management visualization
+- Performance metrics and real-time operations
+- Complete UI/API integration flow
+
 ## Implementation Guidelines
 
 These PoCs serve as implementation reference for the full project development, demonstrating:
