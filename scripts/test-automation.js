@@ -19,12 +19,12 @@ const fetch = require('node-fetch');
 // Configuration
 const CONFIG = {
   API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:8080',
-  SCREENSHOT_DIR: path.join(__dirname, '../test-screenshots'),
+  SCREENSHOT_DIR: path.join(__dirname, '../test-automation-demo'),
   REPORT_DIR: path.join(__dirname, '../test-reports'),
   USERNAME: 'api_user',
   PASSWORD: 'mobile_api_password',
   TIMEOUT: 30000, // 30 seconds
-  SCREENSHOT_FORMAT: 'png',
+  SCREENSHOT_FORMAT: 'jpeg',
   SCREENSHOT_QUALITY: 0.9
 };
 
@@ -371,8 +371,9 @@ async function captureScreenshot(description) {
     
     // Create a placeholder image if API screenshot fails
     const placeholderContent = `Screenshot: ${description}\nTimestamp: ${new Date().toISOString()}\nTest: Mobile API Control Pattern`;
-    fs.writeFileSync(filepath.replace('.png', '.txt'), placeholderContent);
-    console.log(`   📄 Placeholder created: ${filename.replace('.png', '.txt')}`);
+    const placeholderPath = filepath.replace(`.${CONFIG.SCREENSHOT_FORMAT}`, '.txt');
+    fs.writeFileSync(placeholderPath, placeholderContent);
+    console.log(`   📄 Placeholder created: ${path.basename(placeholderPath)}`);
     
     return filename;
     

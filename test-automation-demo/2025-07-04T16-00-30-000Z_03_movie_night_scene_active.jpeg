@@ -1,0 +1,22 @@
+DEMO SCREENSHOT (JPEG FORMAT)
+=============================
+
+Scene Control Panel - Movie Night Scene Active
+
+Active Scene: Movie Night (highlighted in orange)
+
+[Movie Night*] [Bright] [Party] [Sleep]
+
+Lights: Dimmed to 25%
+Color: Warm white
+
+Result of API command: POST /api/actions/trigger {"target": "movie-night-scene"}
+
+Filename: 2025-07-04T16-00-30-000Z_03_movie_night_scene_active.jpeg
+Format: JPEG
+Timestamp: 2025-07-04T16:59:42.485Z
+Mobile API Control Pattern Demo
+
+Note: This is a placeholder demonstrating the screenshot capture functionality.
+In a real implementation, this would contain the actual JPEG image data
+captured from the mobile application interface.

@@ -1,45 +1,104 @@
-# Test Automation Demo Results
+# Test Automation Demo Screenshots
 
-This directory contains the results from running the Mobile API Control Pattern test automation script.
+This directory contains demo screenshot files demonstrating the Mobile API Control Pattern test automation functionality.
 
-## Contents
+## Screenshot Format
 
-### Screenshots (PNG files)
-The test automation script captured screenshots before and after each API command execution:
+All screenshots are generated in **JPEG format** as requested, showing the app's UI state changes in response to API commands.
 
-- `*_01_authenticated_state.png` - App state after successful authentication
-- `*_02_current_lighting_state.png` - Initial lighting control state  
-- `*_02_living_room_light_turned_on.png` - Living room light turned on via API
-- `*_02_living_room_light_dimmed.png` - Light dimmed to 75% brightness via API
-- `*_02_living_room_light_blue_color.png` - Light color changed to blue via API
-- `*_03_current_scene.png` - Current scene state
-- `*_03_movie_night_scene_active.png` - Movie night scene activated via API
-- `*_03_bright_scene_active.png` - Bright scene activated via API
-- `*_04_all_lights_current_state.png` - All lights current state
-- `*_04_all_lights_on.png` - All lights turned on via API
-- `*_04_all_lights_off.png` - All lights turned off via API
+## Files Generated
 
-### Test Report (HTML)
-- `test-report-*.html` - Comprehensive HTML report with test results, performance metrics, and embedded screenshots
+1. `2025-07-04T16-00-00-000Z_01_authenticated_state.jpeg` - Mobile API Control App - User Authenticated
+✓ API Server: Online
+✓ Dashboard Ready
 
-### Placeholder Files (TXT)
-- `*_initial_app_state.txt` - Text placeholder for initial app state (when screenshot API wasn't ready)
+This screenshot shows the app after successful API authentication via POST /auth/login\n2. `2025-07-04T16-00-05-000Z_02_current_lighting_state.jpeg` - Lighting Control Panel
 
-## Test Results Summary
+Living Room: OFF (gray circle)
+Kitchen: OFF (gray circle)
+Bedroom: OFF (gray circle)
 
-✅ **Success Rate**: 80% (8/10 tests passed)  
-⚡ **Performance**: Average response time 3ms  
-🔄 **API Endpoints Tested**: Authentication, State Management, Action Execution, Health Check  
-📸 **Screenshots Captured**: 11 visual state captures demonstrating API control  
+This shows the initial lighting state before API commands\n3. `2025-07-04T16-00-10-000Z_02_living_room_light_turned_on.jpeg` - Lighting Control Panel - Living Room Light ON
 
-## Mobile API Control Pattern Demonstration
+Living Room: ON (yellow circle) - Brightness: 100%
+Kitchen: OFF (gray circle)
+Bedroom: OFF (gray circle)
 
-These results prove that:
+Result of API command: POST /api/state {"target": "living_room_light", "state": "on"}\n4. `2025-07-04T16-00-15-000Z_02_living_room_light_dimmed.jpeg` - Lighting Control Panel - Living Room Light Dimmed
 
-1. **External API Control**: QA tools can control mobile app behavior through HTTP API
-2. **Real-time State Changes**: API commands immediately update app state  
-3. **Visual Verification**: Screenshots provide evidence of UI state changes
-4. **Performance**: Consistent sub-10ms response times for all operations
-5. **Reliability**: High success rate with proper error handling
+Living Room: ON (dim yellow circle) - Brightness: 75%
+Kitchen: OFF (gray circle)
+Bedroom: OFF (gray circle)
 
-The test automation successfully demonstrates the core value proposition of the Mobile API Control Pattern for automated mobile app testing.
+Result of API command: POST /api/state {"target": "living_room_light", "brightness": 75}\n5. `2025-07-04T16-00-20-000Z_02_living_room_light_blue_color.jpeg` - Lighting Control Panel - Living Room Light Blue Color
+
+Living Room: ON (blue circle) - Color: Blue (#0000FF)
+Kitchen: OFF (gray circle)
+Bedroom: OFF (gray circle)
+
+Result of API command: POST /api/state {"target": "living_room_light", "color": "#0000FF"}\n6. `2025-07-04T16-00-25-000Z_03_current_scene.jpeg` - Scene Control Panel
+
+Active Scene: None
+
+[Movie Night] [Bright] [Party] [Sleep]
+(All buttons shown in gray/inactive state)
+
+This shows the scene selection interface before any scene activation\n7. `2025-07-04T16-00-30-000Z_03_movie_night_scene_active.jpeg` - Scene Control Panel - Movie Night Scene Active
+
+Active Scene: Movie Night (highlighted in orange)
+
+[Movie Night*] [Bright] [Party] [Sleep]
+
+Lights: Dimmed to 25%
+Color: Warm white
+
+Result of API command: POST /api/actions/trigger {"target": "movie-night-scene"}\n8. `2025-07-04T16-00-35-000Z_03_bright_scene_active.jpeg` - Scene Control Panel - Bright Scene Active
+
+Active Scene: Bright (highlighted in yellow)
+
+[Movie Night] [Bright*] [Party] [Sleep]
+
+All Lights: 100% brightness
+Color: Cool white
+
+Result of API command: POST /api/actions/trigger {"target": "bright-scene"}\n9. `2025-07-04T16-00-40-000Z_04_all_lights_current_state.jpeg` - All Lights Control Panel
+
+Living Room: ON (yellow)
+Kitchen: OFF (gray)
+Bedroom: OFF (gray)
+
+This shows the current state before the "all lights" toggle operation\n10. `2025-07-04T16-00-45-000Z_04_all_lights_on.jpeg` - All Lights Control Panel - All Lights ON
+
+Living Room: ON (yellow)
+Kitchen: ON (yellow)
+Bedroom: ON (yellow)
+
+✓ All lights activated via API
+
+Result of API command: POST /api/actions/toggle {"target": "all_lights", "state": "on"}\n11. `2025-07-04T16-00-50-000Z_04_all_lights_off.jpeg` - All Lights Control Panel - All Lights OFF
+
+Living Room: OFF (gray)
+Kitchen: OFF (gray)
+Bedroom: OFF (gray)
+
+✓ All lights deactivated via API
+
+Result of API command: POST /api/actions/toggle {"target": "all_lights", "state": "off"}
+
+## Usage
+
+These screenshots demonstrate how the test automation script captures visual evidence of:
+- API authentication success
+- Light control via API commands  
+- Scene activation through API calls
+- Multiple device state changes
+- Real-time UI updates reflecting API-driven state changes
+
+## API Commands Demonstrated
+
+- `POST /auth/login` - User authentication
+- `POST /api/state` - Device state changes (lights, brightness, color)
+- `POST /api/actions/trigger` - Scene activation
+- `POST /api/actions/toggle` - Bulk device operations
+
+Each screenshot file name includes a timestamp and description for easy identification and chronological ordering.
