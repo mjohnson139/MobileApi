@@ -9,6 +9,10 @@ node_modules/
 vendor/
 .packages
 
+# PoC specific dependencies
+poc/*/node_modules/
+poc/*/package-lock.json
+
 # IDE and editor files
 .vscode/
 .idea/
