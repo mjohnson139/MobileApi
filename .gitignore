@@ -1,0 +1,107 @@
+# Build artifacts
+build/
+dist/
+out/
+target/
+
+# Dependencies
+node_modules/
+vendor/
+.packages
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary directories
+tmp/
+temp/
+
+# Mobile specific
+*.apk
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Platform specific
+# Android
+*.iml
+.gradle
+local.properties
+.idea/workspace.xml
+.idea/libraries
+.idea/modules.xml
+.idea/misc.xml
+
+# iOS
+*.xcworkspace
+*.xcuserdata
+DerivedData/
+
+# React Native
+ios/build/
+android/app/build/
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Security
+*.pem
+*.key
+*.crt
+*.p12
+keystore.properties
+
+# Test results
+test-results/
+junit.xml
