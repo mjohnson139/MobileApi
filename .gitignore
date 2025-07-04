@@ -110,3 +110,7 @@ keystore.properties
 # Test results
 test-results/
 junit.xml
+
+# Test automation output
+test-screenshots/
+test-reports/

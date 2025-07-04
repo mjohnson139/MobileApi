@@ -19,6 +19,9 @@
     "clean": "rm -rf dist && rm -rf node_modules/.cache",
     "dev": "nodemon --exec 'npm run type-check && npm start'",
     "test:server": "jest src/server --testPathPattern=server",
+    "test:automation": "node scripts/test-automation.js",
+    "test:automation:full": "scripts/test-automation.sh --start-server",
+    "test:automation:curl": "scripts/test-automation.sh --curl-examples",
     "validate": "npm run lint && npm run type-check && npm run test",
     "prepare": "husky install || true"
   },

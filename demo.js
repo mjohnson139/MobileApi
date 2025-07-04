@@ -122,6 +122,7 @@ async function runDemo() {
         {
           headers: authHeaders,
         },
+      );
 
       if (screenshotResponse.status === 200) {
         console.log('✅ Screenshot captured successfully');
@@ -147,7 +148,7 @@ async function runDemo() {
             2,
           )}ms\n`,
         );
-
+      }
     } else {
       console.log('❌ Authentication failed');
     }
