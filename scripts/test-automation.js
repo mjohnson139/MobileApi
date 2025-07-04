@@ -2,7 +2,7 @@
 
 /**
  * Test Automation Script for Mobile API Control Pattern
- * 
+ *
  * This script demonstrates the Mobile API Control Pattern by:
  * - Authenticating with the mobile app's API server
  * - Sending curl commands to control app state
@@ -25,12 +25,12 @@ const CONFIG = {
   PASSWORD: 'mobile_api_password',
   TIMEOUT: 30000, // 30 seconds
   SCREENSHOT_FORMAT: 'jpeg',
-  SCREENSHOT_QUALITY: 0.9
+  SCREENSHOT_QUALITY: 0.9,
 };
 
 // Global state
 let authToken = null;
-let testResults = [];
+const testResults = [];
 let startTime = null;
 
 /**
@@ -39,26 +39,26 @@ let startTime = null;
 async function main() {
   try {
     console.log('🚀 Starting Mobile API Control Pattern Test Automation');
-    console.log('=' .repeat(60));
-    
+    console.log('='.repeat(60));
+
     startTime = new Date();
-    
+
     // Setup directories
     setupDirectories();
-    
+
     // Wait for server to be ready
     await waitForServer();
-    
+
     // Run test scenarios
     await runTestScenarios();
-    
+
     // Generate report
     await generateReport();
-    
+
     console.log('\n✅ Test automation completed successfully!');
     console.log(`📊 Report generated in: ${CONFIG.REPORT_DIR}`);
     console.log(`📸 Screenshots saved in: ${CONFIG.SCREENSHOT_DIR}`);
-    
+
   } catch (error) {
     console.error('❌ Test automation failed:', error.message);
     process.exit(1);
@@ -70,7 +70,7 @@ async function main() {
  */
 function setupDirectories() {
   console.log('📁 Setting up directories...');
-  
+
   [CONFIG.SCREENSHOT_DIR, CONFIG.REPORT_DIR].forEach(dir => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -84,16 +84,16 @@ function setupDirectories() {
  */
 async function waitForServer() {
   console.log('⏳ Waiting for API server to be ready...');
-  
+
   const maxRetries = 30;
   let retries = 0;
-  
+
   while (retries < maxRetries) {
     try {
       const response = await fetch(`${CONFIG.API_BASE_URL}/health`, {
-        timeout: 5000
+        timeout: 5000,
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         console.log(`✅ Server is ready! Status: ${data.status}`);
@@ -102,12 +102,12 @@ async function waitForServer() {
     } catch (error) {
       // Server not ready yet
     }
-    
+
     retries++;
     console.log(`   Attempt ${retries}/${maxRetries}...`);
     await sleep(1000);
   }
-  
+
   throw new Error('Server failed to start within timeout period');
 }
 
@@ -116,8 +116,8 @@ async function waitForServer() {
  */
 async function runTestScenarios() {
   console.log('\n🧪 Running test scenarios...');
-  console.log('-' .repeat(40));
-  
+  console.log('-'.repeat(40));
+
   // Test scenarios in order
   await runAuthenticationFlow();
   await runLightControlTests();
@@ -131,20 +131,24 @@ async function runTestScenarios() {
  */
 async function runAuthenticationFlow() {
   console.log('\n1️⃣  Authentication Flow');
-  
+
   // Capture initial state
   await captureScreenshot('01_initial_app_state');
-  
+
   // Login request
-  const loginResult = await executeAPICommand('POST', '/auth/login', {
-    username: CONFIG.USERNAME,
-    password: CONFIG.PASSWORD
-  }, '01_authentication_login');
-  
+  const loginResult = await executeAPICommand(
+    'POST',
+    '/auth/login',
+    {
+      username: CONFIG.USERNAME,
+      password: CONFIG.PASSWORD,
+    },
+    '01_authentication_login',
+
   if (loginResult.success && loginResult.responseData.token) {
     authToken = loginResult.responseData.token;
     console.log('   ✅ Authentication successful');
-    
+
     // Capture authenticated state
     await captureScreenshot('01_authenticated_state');
   } else {
@@ -157,32 +161,45 @@ async function runAuthenticationFlow() {
  */
 async function runLightControlTests() {
   console.log('\n2️⃣  Light Control Tests');
-  
+
   // Get current lighting state
   await captureScreenshot('02_current_lighting_state');
-  
+
   // Turn on living room light
-  await executeAPICommand('POST', '/api/state', {
-    path: 'ui.controls.living_room_light.state',
-    value: 'on'
-  }, '02_living_room_light_on');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/state',
+    {
+      path: 'ui.controls.living_room_light.state',
+      value: 'on',
+    },
+    '02_living_room_light_on',
+
   await captureScreenshot('02_living_room_light_turned_on');
-  
+
   // Adjust brightness to 75%
-  await executeAPICommand('POST', '/api/state', {
-    path: 'ui.controls.living_room_light.brightness',
-    value: 75
-  }, '02_living_room_light_brightness_75');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/state',
+    {
+      path: 'ui.controls.living_room_light.brightness',
+      value: 75,
+    },
+    '02_living_room_light_brightness_75',
+
   await captureScreenshot('02_living_room_light_dimmed');
-  
+
   // Change color to blue
-  await executeAPICommand('POST', '/api/state', {
-    path: 'ui.controls.living_room_light.color',
-    value: '#0000FF'
-  }, '02_living_room_light_blue');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/state',
+    {
+      path: 'ui.controls.living_room_light.color',
+      value: '#0000FF',
+    },
+    '02_living_room_light_blue',
+  );
+
   await captureScreenshot('02_living_room_light_blue_color');
 }
 
@@ -191,24 +208,32 @@ async function runLightControlTests() {
  */
 async function runSceneControlTests() {
   console.log('\n3️⃣  Scene Control Tests');
-  
+
   // Capture current scene
   await captureScreenshot('03_current_scene');
-  
+
   // Activate Movie Night scene
-  await executeAPICommand('POST', '/api/actions/trigger', {
-    target: 'movie-night-scene',
-    payload: { sceneId: 'movie-night' }
-  }, '03_activate_movie_night_scene');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/actions/trigger',
+    {
+      target: 'movie-night-scene',
+      payload: { sceneId: 'movie-night' },
+    },
+    '03_activate_movie_night_scene',
+
   await captureScreenshot('03_movie_night_scene_active');
-  
+
   // Activate Bright scene
-  await executeAPICommand('POST', '/api/actions/trigger', {
-    target: 'bright-scene',
-    payload: { sceneId: 'bright' }
-  }, '03_activate_bright_scene');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/actions/trigger',
+    {
+      target: 'bright-scene',
+      payload: { sceneId: 'bright' },
+    },
+    '03_activate_bright_scene',
+
   await captureScreenshot('03_bright_scene_active');
 }
 
@@ -217,24 +242,33 @@ async function runSceneControlTests() {
  */
 async function runMultipleLightControlTests() {
   console.log('\n4️⃣  Multiple Light Control Tests');
-  
+
   // Capture all lights current state
   await captureScreenshot('04_all_lights_current_state');
-  
+
   // Turn on all lights
-  await executeAPICommand('POST', '/api/actions/toggle', {
-    target: 'all_lights',
-    payload: { state: 'on' }
-  }, '04_turn_on_all_lights');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/actions/toggle',
+    {
+      target: 'all_lights',
+      payload: { state: 'on' },
+    },
+    '04_turn_on_all_lights',
+  );
+
   await captureScreenshot('04_all_lights_on');
-  
+
   // Turn off all lights
-  await executeAPICommand('POST', '/api/actions/toggle', {
-    target: 'all_lights',
-    payload: { state: 'off' }
-  }, '04_turn_off_all_lights');
-  
+  await executeAPICommand(
+    'POST',
+    '/api/actions/toggle',
+    {
+      target: 'all_lights',
+      payload: { state: 'off' },
+    },
+    '04_turn_off_all_lights',
+
   await captureScreenshot('04_all_lights_off');
 }
 
@@ -243,13 +277,13 @@ async function runMultipleLightControlTests() {
  */
 async function runHealthAndStateVerification() {
   console.log('\n5️⃣  Health and State Verification');
-  
+
   // Health check
   await executeAPICommand('GET', '/health', null, '05_health_check');
-  
+
   // Get current state
   const stateResult = await executeAPICommand('GET', '/api/state', null, '05_get_current_state');
-  
+
   if (stateResult.success) {
     console.log('   ✅ State retrieved successfully');
     console.log(`   📊 State keys: ${Object.keys(stateResult.responseData).join(', ')}`);
@@ -261,34 +295,34 @@ async function runHealthAndStateVerification() {
  */
 async function executeAPICommand(method, endpoint, data, testName) {
   const startTime = Date.now();
-  
+
   try {
     console.log(`   🔄 ${method} ${endpoint}`);
-    
+
     // Prepare fetch options
     const options = {
       method,
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: CONFIG.TIMEOUT
+      timeout: CONFIG.TIMEOUT,
     };
-    
+
     // Add authorization if we have a token
     if (authToken) {
-      options.headers['Authorization'] = `Bearer ${authToken}`;
+      options.headers.Authorization = `Bearer ${authToken}`;
     }
-    
+
     // Add body for POST requests
     if (data && (method === 'POST' || method === 'PUT')) {
       options.body = JSON.stringify(data);
     }
-    
+
     // Make the request
     const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, options);
     const responseData = await response.json();
     const duration = Date.now() - startTime;
-    
+
     const result = {
       testName,
       method,
@@ -298,19 +332,20 @@ async function executeAPICommand(method, endpoint, data, testName) {
       responseData,
       duration,
       success: response.ok,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     testResults.push(result);
-    
+
     if (response.ok) {
       console.log(`   ✅ ${response.status} (${duration}ms)`);
     } else {
-      console.log(`   ❌ ${response.status} (${duration}ms) - ${responseData.error || 'Unknown error'}`);
+      console.log(
+        `   ❌ ${response.status} (${duration}ms) - ${responseData.error || 'Unknown error'}`,
+      );
     }
-    
+
     return result;
-    
   } catch (error) {
     const duration = Date.now() - startTime;
     const result = {
@@ -322,12 +357,12 @@ async function executeAPICommand(method, endpoint, data, testName) {
       responseData: { error: error.message },
       duration,
       success: false,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     testResults.push(result);
     console.log(`   ❌ Error (${duration}ms) - ${error.message}`);
-    
+
     return result;
   }
 }
@@ -340,22 +375,24 @@ async function captureScreenshot(description) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `${timestamp}_${description}.${CONFIG.SCREENSHOT_FORMAT}`;
     const filepath = path.join(CONFIG.SCREENSHOT_DIR, filename);
-    
+
     console.log(`   📸 Capturing screenshot: ${description}`);
-    
+
     // Try to get screenshot from API if available
     if (authToken) {
       try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/api/screenshot?format=${CONFIG.SCREENSHOT_FORMAT}&quality=${CONFIG.SCREENSHOT_QUALITY}`, {
-          headers: {
-            'Authorization': `Bearer ${authToken}`
+        const response = await fetch(
+          `${CONFIG.API_BASE_URL}/api/screenshot?format=${CONFIG.SCREENSHOT_FORMAT}&quality=${CONFIG.SCREENSHOT_QUALITY}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${authToken}`,
+            },
+            timeout: CONFIG.TIMEOUT,
           },
-          timeout: CONFIG.TIMEOUT
-        });
-        
+
         if (response.ok) {
           const data = await response.json();
-          
+
           if (data.success && data.imageData) {
             // Save base64 image data
             const imageBuffer = Buffer.from(data.imageData, 'base64');
@@ -368,15 +405,15 @@ async function captureScreenshot(description) {
         console.log(`   ⚠️  API screenshot failed, creating placeholder: ${error.message}`);
       }
     }
-    
+
     // Create a placeholder image if API screenshot fails
     const placeholderContent = `Screenshot: ${description}\nTimestamp: ${new Date().toISOString()}\nTest: Mobile API Control Pattern`;
     const placeholderPath = filepath.replace(`.${CONFIG.SCREENSHOT_FORMAT}`, '.txt');
     fs.writeFileSync(placeholderPath, placeholderContent);
     console.log(`   📄 Placeholder created: ${path.basename(placeholderPath)}`);
-    
+
     return filename;
-    
+
   } catch (error) {
     console.log(`   ❌ Screenshot capture failed: ${error.message}`);
     return null;
@@ -388,14 +425,15 @@ async function captureScreenshot(description) {
  */
 async function generateReport() {
   console.log('\n📊 Generating test report...');
-  
+
   const endTime = new Date();
   const duration = endTime - startTime;
-  
+
   const successfulTests = testResults.filter(t => t.success).length;
   const failedTests = testResults.length - successfulTests;
-  const averageResponseTime = testResults.reduce((sum, t) => sum + t.duration, 0) / testResults.length;
-  
+  const averageResponseTime =
+    testResults.reduce((sum, t) => sum + t.duration, 0) / testResults.length;
+
   // Generate HTML report
   const htmlReport = generateHTMLReport({
     startTime,
@@ -405,12 +443,15 @@ async function generateReport() {
     successfulTests,
     failedTests,
     averageResponseTime,
-    testResults
+    testResults,
   });
-  
-  const reportPath = path.join(CONFIG.REPORT_DIR, `test-report-${new Date().toISOString().split('T')[0]}.html`);
+
+  const reportPath = path.join(
+    CONFIG.REPORT_DIR,
+    `test-report-${new Date().toISOString().split('T')[0]}.html`,
+  );
   fs.writeFileSync(reportPath, htmlReport);
-  
+
   // Generate summary
   console.log('\n📈 Test Summary:');
   console.log(`   Total Tests: ${testResults.length}`);
@@ -474,7 +515,9 @@ function generateHTMLReport(summary) {
             </div>
             <div class="metric">
                 <h3>Success Rate</h3>
-                <div class="value">${((summary.successfulTests / summary.totalTests) * 100).toFixed(1)}%</div>
+                <div class="value">${((summary.successfulTests / summary.totalTests) * 100).toFixed(
+                  1,
+                )}%</div>
             </div>
             <div class="metric">
                 <h3>Avg Response Time</h3>
@@ -491,7 +534,9 @@ function generateHTMLReport(summary) {
         <p><strong>Completed:</strong> ${summary.endTime.toISOString()}</p>
         
         <h2>🧪 Test Results</h2>
-        ${summary.testResults.map((test, index) => `
+        ${summary.testResults
+          .map(
+            (test, index) => `
             <div class="test-result ${test.success ? 'success' : 'error'}">
                 <div class="test-header">
                     <div class="test-title">${index + 1}. ${test.testName}</div>
@@ -504,18 +549,24 @@ function generateHTMLReport(summary) {
                     → <strong>${test.statusCode}</strong> (${test.duration}ms)
                     <div class="timestamp">${test.timestamp}</div>
                 </div>
-                ${test.requestData ? `
+                ${
+                  test.requestData
+                    ? `
                     <div class="request-data">
                         <strong>Request:</strong><br>
                         ${JSON.stringify(test.requestData, null, 2)}
                     </div>
-                ` : ''}
+                `
+                    : ''
+                }
                 <div class="response-data">
                     <strong>Response:</strong><br>
                     ${JSON.stringify(test.responseData, null, 2)}
                 </div>
             </div>
-        `).join('')}
+        `,
+          )
+          .join('')}
         
         <h2>📸 Screenshots</h2>
         <p>Screenshots are saved in: <code>${CONFIG.SCREENSHOT_DIR}</code></p>
@@ -556,5 +607,5 @@ if (require.main === module) {
 
 module.exports = {
   main,
-  CONFIG
+  CONFIG,
 };
