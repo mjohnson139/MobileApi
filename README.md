@@ -8,9 +8,18 @@ This project implements a novel approach to mobile app testing by embedding an H
 
 ## 📱 Live Demonstrations
 
-**[View Screenshots of Working PoC](poc/POC_SCREENSHOTS.md)**
+### App Interface Screenshots
+**[View App Screenshots](screenshots/README.md)**
 
-See the Mobile API Control Pattern in action with live screenshots showing:
+See the complete Smart Home Control Panel interface:
+- **Smart Home Tab**: Consumer-facing device controls with touch-optimized interface
+- **Server Control Tab**: API server management and testing tools
+- **Performance Monitoring**: Real-time API metrics and response tracking
+
+### Technical Proof of Concept
+**[View Technical PoC Screenshots](poc/POC_SCREENSHOTS.md)**
+
+Technical demonstrations showing:
 - React Native app with embedded Express.js server running
 - Real-time API responses and state management
 - Redux state visualization with performance metrics
