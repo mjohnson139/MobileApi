@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ServerState {
   isRunning: boolean;
+  status: string;
   port: number;
   startTime: number | null;
   requestCount: number;
@@ -11,6 +12,7 @@ export interface ServerState {
 
 const initialState: ServerState = {
   isRunning: false,
+  status: 'stopped',
   port: 8080,
   startTime: null,
   requestCount: 0,
@@ -24,12 +26,17 @@ const serverSlice = createSlice({
   reducers: {
     start: (state, action: PayloadAction<{ port: number; startTime: number }>) => {
       state.isRunning = true;
+      state.status = 'running';
       state.port = action.payload.port;
       state.startTime = action.payload.startTime;
     },
     stop: state => {
       state.isRunning = false;
+      state.status = 'stopped';
       state.startTime = null;
+    },
+    setStatus: (state, action: PayloadAction<string>) => {
+      state.status = action.payload;
     },
     recordRequest: (state, action: PayloadAction<any>) => {
       state.requestCount += 1;
@@ -45,5 +52,5 @@ const serverSlice = createSlice({
   },
 });
 
-export const { start, stop, recordRequest, recordError } = serverSlice.actions;
+export const { start, stop, setStatus, recordRequest, recordError } = serverSlice.actions;
 export default serverSlice.reducer;
