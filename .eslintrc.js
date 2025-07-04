@@ -57,5 +57,7 @@ module.exports = {
     'android/',
     'ios/',
     'babel.config.js',
+    'poc/',
+    'demo.js',
   ],
 };

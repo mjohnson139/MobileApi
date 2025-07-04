@@ -1,5 +1,4 @@
 import request from 'supertest';
-import express from 'express';
 import { EmbeddedServer } from '../src/server/EmbeddedServer';
 import { store } from '../src/store';
 

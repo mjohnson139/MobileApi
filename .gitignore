@@ -3,6 +3,7 @@ build/
 dist/
 out/
 target/
+tsconfig.tsbuildinfo
 
 # Dependencies
 node_modules/

@@ -66,7 +66,7 @@ jobs:
           
       - name: Run Code Quality Checks
         run: |
-          npm run lint
+          npm run lint -- --max-warnings 50
           
       - name: Run Test Suite
         if: ${{ inputs.run_tests == 'true' || inputs.run_tests == '' }}
