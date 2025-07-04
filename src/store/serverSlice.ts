@@ -27,7 +27,7 @@ const serverSlice = createSlice({
       state.port = action.payload.port;
       state.startTime = action.payload.startTime;
     },
-    stop: (state) => {
+    stop: state => {
       state.isRunning = false;
       state.startTime = null;
     },

@@ -30,7 +30,7 @@ export class EmbeddedServer {
     this.store = store;
     this.port = port || serverConfig.port;
     this.app = express();
-    
+
     this.initializeMiddleware();
     this.initializeRoutes();
     this.initializeErrorHandling();
@@ -38,16 +38,20 @@ export class EmbeddedServer {
 
   private initializeMiddleware(): void {
     // Security middleware
-    this.app.use(helmet({
-      crossOriginEmbedderPolicy: false,
-      contentSecurityPolicy: securityConfig.helmet.contentSecurityPolicy,
-    }));
+    this.app.use(
+      helmet({
+        crossOriginEmbedderPolicy: false,
+        contentSecurityPolicy: securityConfig.helmet.contentSecurityPolicy,
+      }),
+    );
 
     // CORS configuration
-    this.app.use(cors({
-      origin: securityConfig.cors.origin,
-      credentials: securityConfig.cors.credentials,
-    }));
+    this.app.use(
+      cors({
+        origin: securityConfig.cors.origin,
+        credentials: securityConfig.cors.credentials,
+      }),
+    );
 
     // Compression and parsing
     this.app.use(compression());
@@ -63,19 +67,19 @@ export class EmbeddedServer {
     // Rate limiting
     const rateLimiter = createRateLimiter(
       securityConfig.rateLimit.windowMs,
-      securityConfig.rateLimit.max
+      securityConfig.rateLimit.max,
     );
     this.app.use(rateLimiter);
 
     // Custom request timing middleware
     this.app.use((req: Request, res: Response, next) => {
       const startTime = Date.now();
-      
+
       res.on('finish', () => {
         const duration = Date.now() - startTime;
         this.recordRequestMetric(req.path, req.method, duration, res.statusCode, req);
       });
-      
+
       next();
     });
   }
@@ -110,10 +114,7 @@ export class EmbeddedServer {
         version: '1.0.0',
         description: 'Embedded HTTP server for mobile application control',
         endpoints: {
-          public: [
-            'GET /health - Server health check',
-            'GET /docs - API documentation',
-          ],
+          public: ['GET /health - Server health check', 'GET /docs - API documentation'],
           authentication: [
             'POST /auth/login - User login',
             'POST /auth/validate - Token validation',
@@ -140,15 +141,15 @@ export class EmbeddedServer {
     this.app.use((err: Error, req: Request, res: Response, _next: any) => {
       this.errorCount++;
       console.error('Server error:', err);
-      
+
       // Update error count in store
       this.store.dispatch({
         type: 'server/recordError',
-        payload: { 
-          error: err.message, 
+        payload: {
+          error: err.message,
           path: req.path,
-          timestamp: Date.now() 
-        }
+          timestamp: Date.now(),
+        },
       });
 
       res.status(500).json({
@@ -177,14 +178,14 @@ export class EmbeddedServer {
 
         this.isRunning = true;
         this.startTime = Date.now();
-        
+
         // Update server state in store
         this.store.dispatch({
           type: 'server/start',
           payload: {
             port: this.port,
             startTime: this.startTime,
-          }
+          },
         });
 
         console.log(`Embedded server started on port ${this.port}`);
@@ -215,11 +216,11 @@ export class EmbeddedServer {
 
         this.isRunning = false;
         this.startTime = null;
-        
+
         // Update server state in store
         this.store.dispatch({
           type: 'server/stop',
-          payload: {}
+          payload: {},
         });
 
         console.log('Embedded server stopped');
@@ -252,7 +253,7 @@ export class EmbeddedServer {
     try {
       const state = this.store.getState();
       const serverStatus = this.getStatus();
-      
+
       const response: HealthResponse = {
         status: 'healthy',
         uptime: serverStatus.uptime,
@@ -305,14 +306,14 @@ export class EmbeddedServer {
   }
 
   private recordRequestMetric(
-    path: string, 
-    method: string, 
-    duration: number, 
-    statusCode: number, 
-    req: Request
+    path: string,
+    method: string,
+    duration: number,
+    statusCode: number,
+    req: Request,
   ): void {
     this.requestCount++;
-    
+
     const metric: RequestMetric = {
       id: uuidv4(),
       method,
@@ -325,7 +326,7 @@ export class EmbeddedServer {
     };
 
     this.metrics.push(metric);
-    
+
     // Keep only last 1000 metrics
     if (this.metrics.length > 1000) {
       this.metrics.shift();
@@ -334,13 +335,15 @@ export class EmbeddedServer {
     // Dispatch action to update server metrics in Redux store
     this.store.dispatch({
       type: 'server/recordRequest',
-      payload: metric
+      payload: metric,
     });
   }
 
   private calculateAverageResponseTime(): number {
-    if (this.metrics.length === 0) return 0;
-    
+    if (this.metrics.length === 0) {
+      return 0;
+    }
+
     const totalTime = this.metrics.reduce((sum, metric) => sum + metric.duration, 0);
     return totalTime / this.metrics.length;
   }

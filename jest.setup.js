@@ -1,10 +1,16 @@
+// Set test environment variables
+process.env.JWT_SECRET = 'test-jwt-secret-key-32-characters-minimum-length-required';
+process.env.NODE_ENV = 'test';
+process.env.API_PORT = '8081';
+process.env.ENABLE_API_SERVER = 'true';
+
 // Mock react-native for testing
 jest.mock('react-native', () => ({
   AppRegistry: {
     registerComponent: jest.fn(),
   },
   StyleSheet: {
-    create: (styles) => styles,
+    create: styles => styles,
   },
   View: 'View',
   Text: 'Text',

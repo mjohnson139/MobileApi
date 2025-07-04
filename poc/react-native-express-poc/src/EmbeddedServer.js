@@ -14,33 +14,35 @@ export class EmbeddedServer {
     this.server = null;
     this.isRunning = false;
     this.startTime = null;
-    
+
     this.initializeApp();
   }
 
   initializeApp() {
     this.app = express();
-    
+
     // Security middleware
-    this.app.use(helmet({
-      crossOriginEmbedderPolicy: false,
-    }));
-    
+    this.app.use(
+      helmet({
+        crossOriginEmbedderPolicy: false,
+      }),
+
     // CORS configuration for mobile testing
-    this.app.use(cors({
-      origin: true,
-      credentials: true,
-    }));
-    
+    this.app.use(
+      cors({
+        origin: true,
+        credentials: true,
+      }),
+
     // JSON parsing middleware
     this.app.use(express.json());
-    
+
     // Request logging middleware
     this.app.use((req, res, next) => {
       console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
       next();
     });
-    
+
     this.setupRoutes();
   }
 
@@ -50,10 +52,10 @@ export class EmbeddedServer {
       const uptime = this.startTime ? Date.now() - this.startTime : 0;
       res.json({
         status: 'healthy',
-        uptime: uptime,
+        uptime,
         timestamp: new Date().toISOString(),
         port: this.port,
-        version: '1.0.0-poc'
+        version: '1.0.0-poc',
       });
     });
 
@@ -66,47 +68,47 @@ export class EmbeddedServer {
             living_room_light: {
               type: 'switch',
               state: 'on',
-              brightness: 75
+              brightness: 75,
             },
             bedroom_light: {
-              type: 'switch', 
-              state: 'off'
+              type: 'switch',
+              state: 'off',
             },
             thermostat: {
               type: 'temperature',
               current_temp: 72,
               target_temp: 70,
-              mode: 'cool'
+              mode: 'cool',
             }
-          }
+          },
         },
         server_info: {
           uptime: this.startTime ? Date.now() - this.startTime : 0,
           memory_usage: this.getMemoryUsage(),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       };
-      
+
       res.json(mockState);
     });
 
     // State update endpoint
     this.app.post('/state', (req, res) => {
       const { path, value } = req.body;
-      
+
       if (!path) {
         return res.status(400).json({
-          error: 'Missing required field: path'
+          error: 'Missing required field: path',
         });
       }
-      
+
       // Mock state update response
       res.json({
         success: true,
         updated: {
           path,
           value,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       });
     });
@@ -115,7 +117,7 @@ export class EmbeddedServer {
     this.app.post('/actions/:type', (req, res) => {
       const { type } = req.params;
       const { target, payload } = req.body;
-      
+
       // Mock action execution
       res.json({
         success: true,
@@ -123,7 +125,7 @@ export class EmbeddedServer {
           type,
           target,
           payload,
-          executed_at: new Date().toISOString()
+          executed_at: new Date().toISOString(),
         }
       });
     });
@@ -134,12 +136,12 @@ export class EmbeddedServer {
         server: {
           uptime: this.startTime ? Date.now() - this.startTime : 0,
           memory: this.getMemoryUsage(),
-          port: this.port
+          port: this.port,
         },
         performance: {
           startup_time: this.startTime ? 'Measured on start()' : null,
           response_times: 'Available in benchmarks',
-          memory_overhead: 'Available in benchmarks'
+          memory_overhead: 'Available in benchmarks',
         }
       });
     });
@@ -154,7 +156,7 @@ export class EmbeddedServer {
           'GET /state',
           'POST /state',
           'POST /actions/:type',
-          'GET /metrics'
+          'GET /metrics',
         ]
       });
     });
@@ -164,7 +166,7 @@ export class EmbeddedServer {
       console.error('Server error:', err);
       res.status(500).json({
         error: 'Internal server error',
-        message: err.message
+        message: err.message,
       });
     });
   }
@@ -176,8 +178,8 @@ export class EmbeddedServer {
 
     return new Promise((resolve, reject) => {
       const startTime = Date.now();
-      
-      this.server = this.app.listen(this.port, (err) => {
+
+      this.server = this.app.listen(this.port, err => {
         if (err) {
           reject(err);
           return;
@@ -186,17 +188,17 @@ export class EmbeddedServer {
         this.isRunning = true;
         this.startTime = Date.now();
         const actualStartupTime = this.startTime - startTime;
-        
+
         console.log(`Embedded server started on port ${this.port} in ${actualStartupTime}ms`);
         resolve({
           port: this.port,
           startup_time: actualStartupTime,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       });
 
       // Handle server errors
-      this.server.on('error', (err) => {
+      this.server.on('error', err => {
         if (err.code === 'EADDRINUSE') {
           reject(new Error(`Port ${this.port} is already in use`));
         } else {
@@ -212,7 +214,7 @@ export class EmbeddedServer {
     }
 
     return new Promise((resolve, reject) => {
-      this.server.close((err) => {
+      this.server.close(err => {
         if (err) {
           reject(err);
           return;
@@ -220,7 +222,7 @@ export class EmbeddedServer {
 
         this.isRunning = false;
         this.server = null;
-        console.log(`Embedded server stopped`);
+        console.log('Embedded server stopped');
         resolve();
       });
     });
@@ -234,7 +236,7 @@ export class EmbeddedServer {
       heapUsed: '~15MB (estimated)',
       heapTotal: '~20MB (estimated)',
       external: '~2MB (estimated)',
-      note: 'Actual memory monitoring requires platform-specific implementation'
+      note: 'Actual memory monitoring requires platform-specific implementation',
     };
   }
 
@@ -243,7 +245,7 @@ export class EmbeddedServer {
       isRunning: this.isRunning,
       port: this.port,
       uptime: this.startTime ? Date.now() - this.startTime : 0,
-      startTime: this.startTime
+      startTime: this.startTime,
     };
   }
 }

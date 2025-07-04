@@ -15,7 +15,7 @@ const store = configureStore({
     devices: deviceControlSlice.reducer,
     server: serverStateSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],

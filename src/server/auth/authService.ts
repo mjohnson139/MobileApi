@@ -6,8 +6,8 @@ import { AuthToken, AuthUser } from '../../types';
 export class AuthService {
   private static readonly validUsers: Record<string, string> = {
     // Default API user - in production, this should come from a secure store
-    'api_user': '$2a$10$m9tB2.kJ.lEpltg17OtQF.Di3Ra44hKW/hplE2e11sqdoABCU6/Xq', // bcrypt hash of 'mobile_api_password'
-    'test_user': '$2a$10$AhLdMPtl77p/jeoT1lyiruxiFXLAJmrvOziCj/rD7/dlgXCGBaslK', // bcrypt hash of 'test_password'
+    api_user: '$2a$10$m9tB2.kJ.lEpltg17OtQF.Di3Ra44hKW/hplE2e11sqdoABCU6/Xq', // bcrypt hash of 'mobile_api_password'
+    test_user: '$2a$10$AhLdMPtl77p/jeoT1lyiruxiFXLAJmrvOziCj/rD7/dlgXCGBaslK', // bcrypt hash of 'test_password'
   };
 
   /**
@@ -28,11 +28,7 @@ export class AuthService {
       algorithm: 'HS256',
     };
 
-    const token = jwt.sign(
-      payload, 
-      securityConfig.jwt.secret as string, 
-      signOptions
-    );
+    const token = jwt.sign(payload, securityConfig.jwt.secret as string, signOptions);
 
     // Return expiresIn that was calculated above
     const expiresIn = expiresInSeconds;
@@ -41,7 +37,7 @@ export class AuthService {
       token,
       expiresIn,
       tokenType: 'Bearer',
-      scope: scope,
+      scope,
     };
   }
 
@@ -50,14 +46,10 @@ export class AuthService {
    */
   public static verifyToken(token: string): AuthUser {
     try {
-      const decoded = jwt.verify(
-        token, 
-        securityConfig.jwt.secret as string, 
-        {
-          algorithms: ['HS256'],
-        }
-      ) as any;
-      
+      const decoded = jwt.verify(token, securityConfig.jwt.secret as string, {
+        algorithms: ['HS256'],
+      }) as any;
+
       return {
         username: decoded.sub,
         scope: decoded.scope ? decoded.scope.split(' ') : [],
@@ -83,8 +75,10 @@ export class AuthService {
     }
 
     // Validate password length
-    if (password.length < validationConfig.auth.minPasswordLength || 
-        password.length > validationConfig.auth.maxPasswordLength) {
+    if (
+      password.length < validationConfig.auth.minPasswordLength ||
+      password.length > validationConfig.auth.maxPasswordLength
+    ) {
       return false;
     }
 
@@ -148,11 +142,16 @@ export class AuthService {
     const unit = match[2];
 
     switch (unit) {
-      case 's': return value;
-      case 'm': return value * 60;
-      case 'h': return value * 3600;
-      case 'd': return value * 86400;
-      default: return 3600;
+      case 's':
+        return value;
+      case 'm':
+        return value * 60;
+      case 'h':
+        return value * 3600;
+      case 'd':
+        return value * 86400;
+      default:
+        return 3600;
     }
   }
 
