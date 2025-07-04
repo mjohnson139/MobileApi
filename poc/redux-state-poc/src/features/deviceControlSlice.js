@@ -12,12 +12,12 @@ const updateDeviceState = createAsyncThunk(
     try {
       // Simulate API call to update device
       await new Promise(resolve => setTimeout(resolve, 100)); // Simulate network delay
-      
+
       return { deviceId, updates, timestamp: Date.now() };
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const executeDeviceAction = createAsyncThunk(
@@ -26,18 +26,18 @@ const executeDeviceAction = createAsyncThunk(
     try {
       // Simulate API call to execute device action
       await new Promise(resolve => setTimeout(resolve, 150));
-      
-      return { 
-        deviceId, 
-        action, 
-        payload, 
+
+      return {
+        deviceId,
+        action,
+        payload,
         executedAt: Date.now(),
-        success: true 
+        success: true,
       };
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -99,7 +99,7 @@ const initialState = {
       online: true,
     },
   },
-  
+
   // Room organization
   rooms: {
     living_room: {
@@ -118,19 +118,19 @@ const initialState = {
       devices: ['smart_lock'],
     },
   },
-  
+
   // Operation states
   loading: {
     deviceUpdates: {},
     deviceActions: {},
   },
-  
+
   // Recent actions history
   actionHistory: [],
-  
+
   // Error states
   errors: {},
-  
+
   // Performance metrics
   metrics: {
     totalStateUpdates: 0,
@@ -147,7 +147,7 @@ const deviceControlSlice = createSlice({
     // Direct device state updates (for UI interactions)
     setDeviceState: (state, action) => {
       const { deviceId, updates } = action.payload;
-      
+
       if (state.devices[deviceId]) {
         state.devices[deviceId].state = {
           ...state.devices[deviceId].state,
@@ -157,17 +157,17 @@ const deviceControlSlice = createSlice({
         state.metrics.totalStateUpdates += 1;
       }
     },
-    
+
     // Device online/offline status
     setDeviceOnline: (state, action) => {
       const { deviceId, online } = action.payload;
-      
+
       if (state.devices[deviceId]) {
         state.devices[deviceId].online = online;
         state.devices[deviceId].lastUpdated = Date.now();
       }
     },
-    
+
     // Add new device
     addDevice: (state, action) => {
       const device = action.payload;
@@ -176,59 +176,59 @@ const deviceControlSlice = createSlice({
         lastUpdated: Date.now(),
         online: true,
       };
-      
+
       // Add to room if specified
       if (device.room && state.rooms[device.room]) {
         state.rooms[device.room].devices.push(device.id);
       }
     },
-    
+
     // Remove device
     removeDevice: (state, action) => {
       const deviceId = action.payload;
-      
+
       // Remove from devices
       delete state.devices[deviceId];
-      
+
       // Remove from rooms
       Object.values(state.rooms).forEach(room => {
         room.devices = room.devices.filter(id => id !== deviceId);
       });
-      
+
       // Clear any loading states
       delete state.loading.deviceUpdates[deviceId];
       delete state.loading.deviceActions[deviceId];
       delete state.errors[deviceId];
     },
-    
+
     // Clear device errors
     clearDeviceError: (state, action) => {
       const deviceId = action.payload;
       delete state.errors[deviceId];
     },
-    
+
     // Add action to history
     addActionToHistory: (state, action) => {
       const actionRecord = {
         ...action.payload,
         timestamp: Date.now(),
       };
-      
+
       state.actionHistory.unshift(actionRecord);
-      
+
       // Keep only last 50 actions
       if (state.actionHistory.length > 50) {
         state.actionHistory = state.actionHistory.slice(0, 50);
       }
-      
+
       state.metrics.totalActionsExecuted += 1;
       state.metrics.lastActionTime = Date.now();
     },
-    
+
     // Bulk state update for API synchronization
     syncDeviceStates: (state, action) => {
       const { devices, timestamp } = action.payload;
-      
+
       Object.keys(devices).forEach(deviceId => {
         if (state.devices[deviceId]) {
           state.devices[deviceId].state = devices[deviceId].state;
@@ -236,12 +236,12 @@ const deviceControlSlice = createSlice({
         }
       });
     },
-    
+
     // Reset all devices to initial state
     resetDevices: () => initialState,
   },
-  
-  extraReducers: (builder) => {
+
+  extraReducers: builder => {
     builder
       // Update device state async
       .addCase(updateDeviceState.pending, (state, action) => {
@@ -251,9 +251,9 @@ const deviceControlSlice = createSlice({
       })
       .addCase(updateDeviceState.fulfilled, (state, action) => {
         const { deviceId, updates, timestamp } = action.payload;
-        
+
         state.loading.deviceUpdates[deviceId] = false;
-        
+
         if (state.devices[deviceId]) {
           state.devices[deviceId].state = {
             ...state.devices[deviceId].state,
@@ -261,7 +261,7 @@ const deviceControlSlice = createSlice({
           };
           state.devices[deviceId].lastUpdated = timestamp;
         }
-        
+
         state.metrics.totalStateUpdates += 1;
       })
       .addCase(updateDeviceState.rejected, (state, action) => {
@@ -269,7 +269,7 @@ const deviceControlSlice = createSlice({
         state.loading.deviceUpdates[deviceId] = false;
         state.errors[deviceId] = action.payload;
       })
-      
+
       // Execute device action async
       .addCase(executeDeviceAction.pending, (state, action) => {
         const { deviceId } = action.meta.arg;
@@ -278,9 +278,9 @@ const deviceControlSlice = createSlice({
       })
       .addCase(executeDeviceAction.fulfilled, (state, action) => {
         const { deviceId, action: actionType, payload, executedAt } = action.payload;
-        
+
         state.loading.deviceActions[deviceId] = false;
-        
+
         // Add to action history
         state.actionHistory.unshift({
           deviceId,
@@ -289,12 +289,12 @@ const deviceControlSlice = createSlice({
           executedAt,
           success: true,
         });
-        
+
         // Keep only last 50 actions
         if (state.actionHistory.length > 50) {
           state.actionHistory = state.actionHistory.slice(0, 50);
         }
-        
+
         state.metrics.totalActionsExecuted += 1;
         state.metrics.lastActionTime = executedAt;
       })

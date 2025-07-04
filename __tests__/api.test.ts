@@ -13,13 +13,11 @@ describe('API Endpoints', () => {
     await server.start();
 
     // Get auth token for protected endpoints
-    const authResponse = await request(`http://localhost:${port}`)
-      .post('/auth/login')
-      .send({
-        username: 'api_user',
-        password: 'mobile_api_password',
-      });
-    
+    const authResponse = await request(`http://localhost:${port}`).post('/auth/login').send({
+      username: 'api_user',
+      password: 'mobile_api_password',
+    });
+
     authToken = authResponse.body.token;
   });
 
@@ -47,9 +45,7 @@ describe('API Endpoints', () => {
     });
 
     test('should reject request without token', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/api/state')
-        .expect(401);
+      const response = await request(`http://localhost:${port}`).get('/api/state').expect(401);
 
       expect(response.body).toMatchObject({
         error: 'Access denied',
@@ -192,9 +188,7 @@ describe('API Endpoints', () => {
     });
 
     test('should reject request without token', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/api/screenshot')
-        .expect(401);
+      const response = await request(`http://localhost:${port}`).get('/api/screenshot').expect(401);
 
       expect(response.body).toMatchObject({
         error: 'Access denied',
@@ -221,9 +215,7 @@ describe('API Endpoints', () => {
     });
 
     test('should reject request without token', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/api/metrics')
-        .expect(401);
+      const response = await request(`http://localhost:${port}`).get('/api/metrics').expect(401);
 
       expect(response.body).toMatchObject({
         error: 'Access denied',

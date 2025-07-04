@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Provider } from 'react-redux';
 import { EmbeddedServer } from './server/EmbeddedServer';
 import { store } from './store';
@@ -15,7 +8,9 @@ import { store } from './store';
 const App: React.FC = () => {
   const [serverStatus, setServerStatus] = React.useState('Stopped');
   const [serverPort] = React.useState(8080);
-  const [apiResponses, setApiResponses] = React.useState<Array<{ timestamp: string; message: string }>>([]);
+  const [apiResponses, setApiResponses] = React.useState<
+    Array<{ timestamp: string; message: string }>
+  >([]);
   const [embeddedServer, setEmbeddedServer] = React.useState<EmbeddedServer | null>(null);
 
   React.useEffect(() => {
@@ -32,7 +27,9 @@ const App: React.FC = () => {
   }, [serverPort]);
 
   const startServer = async () => {
-    if (!embeddedServer) return;
+    if (!embeddedServer) {
+      return;
+    }
 
     try {
       setServerStatus('Starting...');
@@ -46,7 +43,9 @@ const App: React.FC = () => {
   };
 
   const stopServer = async () => {
-    if (!embeddedServer) return;
+    if (!embeddedServer) {
+      return;
+    }
 
     try {
       setServerStatus('Stopping...');
@@ -100,18 +99,18 @@ const App: React.FC = () => {
           password: 'mobile_api_password',
         }),
       });
-      
+
       if (!authResponse.ok) {
         throw new Error('Authentication failed');
       }
-      
+
       const authData = await authResponse.json();
       const token = authData.token;
 
       // Now test state endpoint
       const response = await fetch(`http://localhost:${serverPort}/api/state`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -125,61 +124,68 @@ const App: React.FC = () => {
     const timestamp = new Date().toLocaleTimeString();
     setApiResponses(prev => [
       { timestamp, message },
-      ...prev.slice(0, 19) // Keep last 20 responses
+      ...prev.slice(0, 19), // Keep last 20 responses
     ]);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Mobile API Server</Text>
-      
+
       <View style={styles.statusContainer}>
         <Text style={styles.statusLabel}>Server Status:</Text>
-        <Text style={[
-          styles.statusText,
-          { color: serverStatus.includes('Running') ? '#4CAF50' : '#FF5722' }
-        ]}>
+        <Text
+          style={[
+            styles.statusText,
+            { color: serverStatus.includes('Running') ? '#4CAF50' : '#FF5722' },
+          ]}
+        >
           {serverStatus}
         </Text>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.startButton]}
           onPress={startServer}
-          disabled={serverStatus.includes('Running')}>
+          disabled={serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Start Server</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.stopButton]}
           onPress={stopServer}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Stop Server</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testHealthEndpoint}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Test /health</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testAuthEndpoint}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Test /auth</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testStateEndpoint}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Test /api/state</Text>
         </TouchableOpacity>
       </View>

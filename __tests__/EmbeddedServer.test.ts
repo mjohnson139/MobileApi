@@ -49,14 +49,12 @@ describe('EmbeddedServer', () => {
     });
 
     test('GET /health should return server status', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/health')
-        .expect(200);
+      const response = await request(`http://localhost:${port}`).get('/health').expect(200);
 
       expect(response.body).toMatchObject({
         status: 'healthy',
         server: {
-          port: port,
+          port,
           version: '1.0.0',
         },
       });
@@ -78,9 +76,7 @@ describe('EmbeddedServer', () => {
     });
 
     test('GET /docs should return API documentation', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/docs')
-        .expect(200);
+      const response = await request(`http://localhost:${port}`).get('/docs').expect(200);
 
       expect(response.body).toMatchObject({
         name: 'Mobile API Server',

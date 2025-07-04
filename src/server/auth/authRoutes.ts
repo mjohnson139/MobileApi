@@ -7,13 +7,11 @@ const router = Router();
 
 // Validation schemas
 const loginSchema = Joi.object({
-  username: Joi.string()
-    .pattern(validationConfig.auth.usernamePattern)
-    .required()
-    .messages({
-      'string.pattern.base': 'Username must be 3-30 characters and contain only letters, numbers, and underscores',
-      'any.required': 'Username is required',
-    }),
+  username: Joi.string().pattern(validationConfig.auth.usernamePattern).required().messages({
+    'string.pattern.base':
+      'Username must be 3-30 characters and contain only letters, numbers, and underscores',
+    'any.required': 'Username is required',
+  }),
   password: Joi.string()
     .min(validationConfig.auth.minPasswordLength)
     .max(validationConfig.auth.maxPasswordLength)
@@ -105,7 +103,7 @@ router.post('/validate', (req: Request, res: Response): void => {
     // First verify token, then check expiry
     try {
       const user = AuthService.verifyToken(token);
-      
+
       // Check if token is expired
       if (AuthService.isTokenExpired(token)) {
         res.status(401).json({

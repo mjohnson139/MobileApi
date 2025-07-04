@@ -8,9 +8,7 @@ export const serverConfig: ServerConfig = {
   port: parseInt(process.env.PORT || '8080', 10),
   host: process.env.API_HOST || 'localhost',
   enableApiServer: process.env.ENABLE_API_SERVER === 'true',
-  corsOrigin: process.env.NODE_ENV === 'development' 
-    ? (process.env.CORS_ORIGIN || true) 
-    : false,
+  corsOrigin: process.env.NODE_ENV === 'development' ? process.env.CORS_ORIGIN || true : false,
   jwtSecret: process.env.JWT_SECRET || 'fallback-secret-key',
   jwtExpiry: process.env.JWT_EXPIRY || '1h',
   logLevel: (process.env.LOG_LEVEL as 'error' | 'warn' | 'info' | 'debug') || 'info',
@@ -39,7 +37,7 @@ export const securityConfig = {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "blob:"],
+        imgSrc: ["'self'", 'data:', 'blob:'],
       },
     },
   },

@@ -12,29 +12,29 @@ const syncUIState = createAsyncThunk(
     try {
       // Simulate API call to sync state
       const currentState = getState().ui;
-      
+
       // Mock API response
       return {
         ...currentState,
         lastSynced: Date.now(),
-        syncStatus: 'success'
+        syncStatus: 'success',
       };
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const initialState = {
   // Current screen/view
   currentScreen: 'home',
-  
+
   // Loading states
   loading: {
     sync: false,
     navigation: false,
   },
-  
+
   // UI component states
   components: {
     header: {
@@ -55,14 +55,14 @@ const initialState = {
       type: 'info', // 'info', 'success', 'warning', 'error'
     },
   },
-  
+
   // API synchronization state
   sync: {
     lastSynced: null,
     syncStatus: 'idle', // 'idle', 'loading', 'success', 'error'
     error: null,
   },
-  
+
   // Performance metrics
   metrics: {
     renderCount: 0,
@@ -82,32 +82,32 @@ const uiStateSlice = createSlice({
       state.metrics.stateUpdateCount += 1;
       state.metrics.lastUpdateTime = Date.now();
     },
-    
+
     setNavigationLoading: (state, action) => {
       state.loading.navigation = action.payload;
     },
-    
+
     // Header management
     updateHeader: (state, action) => {
       state.components.header = { ...state.components.header, ...action.payload };
       state.metrics.stateUpdateCount += 1;
     },
-    
+
     // Sidebar management
-    toggleSidebar: (state) => {
+    toggleSidebar: state => {
       state.components.sidebar.isOpen = !state.components.sidebar.isOpen;
       state.metrics.stateUpdateCount += 1;
     },
-    
+
     setSidebarItem: (state, action) => {
       const { itemId, active } = action.payload;
       state.components.sidebar.items = state.components.sidebar.items.map(item => ({
         ...item,
-        active: item.id === itemId ? active : false
+        active: item.id === itemId ? active : false,
       }));
       state.metrics.stateUpdateCount += 1;
     },
-    
+
     // Notifications
     showNotification: (state, action) => {
       const { message, type = 'info' } = action.payload;
@@ -118,22 +118,22 @@ const uiStateSlice = createSlice({
       };
       state.metrics.stateUpdateCount += 1;
     },
-    
-    hideNotification: (state) => {
+
+    hideNotification: state => {
       state.components.notifications.visible = false;
       state.metrics.stateUpdateCount += 1;
     },
-    
+
     // Performance tracking
-    incrementRenderCount: (state) => {
+    incrementRenderCount: state => {
       state.metrics.renderCount += 1;
     },
-    
+
     // State reset
-    resetUIState: (state) => {
+    resetUIState: state => {
       return { ...initialState, metrics: state.metrics };
     },
-    
+
     // Bulk state update (for API synchronization)
     updateUIState: (state, action) => {
       const updates = action.payload;
@@ -146,10 +146,10 @@ const uiStateSlice = createSlice({
       state.metrics.lastUpdateTime = Date.now();
     },
   },
-  
-  extraReducers: (builder) => {
+
+  extraReducers: builder => {
     builder
-      .addCase(syncUIState.pending, (state) => {
+      .addCase(syncUIState.pending, state => {
         state.loading.sync = true;
         state.sync.syncStatus = 'loading';
         state.sync.error = null;

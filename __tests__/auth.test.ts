@@ -125,9 +125,7 @@ describe('Authentication', () => {
     });
 
     test('should reject request without token', async () => {
-      const response = await request(`http://localhost:${port}`)
-        .get('/auth/me')
-        .expect(401);
+      const response = await request(`http://localhost:${port}`).get('/auth/me').expect(401);
 
       expect(response.body).toMatchObject({
         error: 'Access denied',

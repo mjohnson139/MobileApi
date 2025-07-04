@@ -31,7 +31,7 @@ export function authenticateAPI(req: Request, res: Response, next: NextFunction)
 
     // Verify token
     const user = AuthService.verifyToken(token);
-    
+
     // Check if token is expired
     if (AuthService.isTokenExpired(token)) {
       res.status(401).json({
@@ -70,7 +70,7 @@ export function authorize(requiredScope: string | string[]) {
 
     const userScopes = req.user.scope || [];
     const required = Array.isArray(requiredScope) ? requiredScope : [requiredScope];
-    
+
     // Check if user has any of the required scopes
     const hasPermission = required.some(scope => userScopes.includes(scope));
 
@@ -103,7 +103,7 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction): 
     // Ignore authentication errors for optional auth
     console.debug('Optional auth failed:', (error as Error).message);
   }
-  
+
   next();
 }
 
@@ -116,21 +116,21 @@ export function createRateLimiter(windowMs: number, maxRequests: number) {
   return (req: Request, res: Response, next: NextFunction): void => {
     const clientId = req.ip || 'unknown';
     const now = Date.now();
-    
+
     // Get or initialize request history for this client
     if (!requests.has(clientId)) {
       requests.set(clientId, []);
     }
-    
+
     const clientRequests = requests.get(clientId)!;
-    
+
     // Remove old requests outside the window
     const validRequests = clientRequests.filter(timestamp => now - timestamp < windowMs);
-    
+
     // Check if client has exceeded the limit
     if (validRequests.length >= maxRequests) {
       const resetTime = Math.ceil((validRequests[0] + windowMs - now) / 1000);
-      
+
       res.status(429).json({
         error: 'Too many requests',
         message: `Rate limit exceeded. Try again in ${resetTime} seconds.`,
@@ -141,16 +141,16 @@ export function createRateLimiter(windowMs: number, maxRequests: number) {
       });
       return;
     }
-    
+
     // Add current request to history
     validRequests.push(now);
     requests.set(clientId, validRequests);
-    
+
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', maxRequests);
     res.setHeader('X-RateLimit-Remaining', maxRequests - validRequests.length);
     res.setHeader('X-RateLimit-Reset', Math.ceil((validRequests[0] + windowMs) / 1000));
-    
+
     next();
   };
 }
@@ -160,10 +160,10 @@ export function createRateLimiter(windowMs: number, maxRequests: number) {
  */
 export function requestLogger(req: Request, res: Response, next: NextFunction): void {
   const startTime = Date.now();
-  
+
   // Override res.end to log when response is sent
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any, cb?: any): Response {
+  res.end = function (chunk?: any, encoding?: any, cb?: any): Response {
     const duration = Date.now() - startTime;
     const logData = {
       method: req.method,
@@ -174,13 +174,15 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
       userAgent: req.get('User-Agent'),
       timestamp: new Date().toISOString(),
     };
-    
-    console.log(`[${logData.timestamp}] ${logData.method} ${logData.path} - ${logData.statusCode} - ${duration}ms`);
-    
+
+    console.log(
+      `[${logData.timestamp}] ${logData.method} ${logData.path} - ${logData.statusCode} - ${duration}ms`,
+    );
+
     // Call original end method
     originalEnd.call(this, chunk, encoding, cb);
     return this;
   };
-  
+
   next();
 }

@@ -1,0 +1,149 @@
+name: Copilot Instructions Development Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: 'Run full test suite'
+        required: false
+        default: 'true'
+        type: boolean
+      run_build:
+        description: 'Run build process'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  JWT_SECRET: 'copilot-development-jwt-secret-key-32-characters-minimum-length'
+  API_PORT: 8080
+  ENABLE_API_SERVER: true
+  NODE_ENV: development
+  ENABLE_REDUX_DEVTOOLS: true
+  ENABLE_DEBUG_MODE: true
+
+jobs:
+  setup-and-validate:
+    name: Setup Development Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Display Environment Information
+        run: |
+          echo "Node.js Version: $(node --version)"
+          echo "NPM Version: $(npm --version)"
+          echo "Working Directory: $(pwd)"
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          
+      - name: Install Dependencies
+        run: |
+          npm ci
+          
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+            
+      - name: Validate TypeScript Configuration
+        run: |
+          npm run type-check
+          
+      - name: Run Code Quality Checks
+        run: |
+          npm run lint
+          
+      - name: Run Test Suite
+        if: ${{ inputs.run_tests == 'true' || inputs.run_tests == '' }}
+        run: |
+          npm run test
+          
+      - name: Build Project
+        if: ${{ inputs.run_build == 'true' || inputs.run_build == '' }}
+        run: |
+          npm run build
+          
+      - name: Generate Development Summary
+        run: |
+          echo "## Development Environment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node.js**: $(node --version)" >> $GITHUB_STEP_SUMMARY
+          echo "- **NPM**: $(npm --version)" >> $GITHUB_STEP_SUMMARY
+          echo "- **TypeScript**: Configured with strict mode" >> $GITHUB_STEP_SUMMARY
+          echo "- **Testing**: Jest with React Native preset" >> $GITHUB_STEP_SUMMARY
+          echo "- **Linting**: ESLint with React Native configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Server**: Express.js with JWT authentication" >> $GITHUB_STEP_SUMMARY
+          echo "- **State Management**: Redux Toolkit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Available Scripts" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "npm run start        # Start React Native development server" >> $GITHUB_STEP_SUMMARY
+          echo "npm run android      # Run on Android device/emulator" >> $GITHUB_STEP_SUMMARY
+          echo "npm run ios          # Run on iOS device/simulator" >> $GITHUB_STEP_SUMMARY
+          echo "npm run test         # Run test suite" >> $GITHUB_STEP_SUMMARY
+          echo "npm run lint         # Run ESLint" >> $GITHUB_STEP_SUMMARY
+          echo "npm run type-check   # Run TypeScript checking" >> $GITHUB_STEP_SUMMARY
+          echo "npm run build        # Build TypeScript" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          
+      - name: Display Project Structure
+        run: |
+          echo "## Project Structure Overview" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          find src -type f -name "*.ts" -o -name "*.tsx" | head -20 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  environment-validation:
+    name: Validate React Native Environment
+    runs-on: ubuntu-latest
+    needs: setup-and-validate
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Validate React Native Setup
+        run: |
+          echo "Validating React Native environment..."
+          npx react-native --version || echo "React Native CLI not available globally (expected in CI)"
+          
+      - name: Check Essential Files
+        run: |
+          echo "Checking essential project files..."
+          test -f package.json && echo "✓ package.json found"
+          test -f tsconfig.json && echo "✓ tsconfig.json found"
+          test -f babel.config.js && echo "✓ babel.config.js found"
+          test -f jest.setup.js && echo "✓ jest.setup.js found"
+          test -d src && echo "✓ src directory found"
+          test -d __tests__ && echo "✓ __tests__ directory found"
+          
+      - name: Validate API Server Components
+        run: |
+          echo "Validating API server components..."
+          test -f src/server/EmbeddedServer.ts && echo "✓ EmbeddedServer.ts found"
+          test -f src/config/index.ts && echo "✓ Configuration found"
+          test -d src/server/routes && echo "✓ API routes directory found"
+          test -d src/store && echo "✓ Redux store directory found"

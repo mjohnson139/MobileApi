@@ -3,16 +3,9 @@
  * Demonstrates React Native app with embedded Express.js server
  */
 
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import {EmbeddedServer} from './EmbeddedServer';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { EmbeddedServer } from './EmbeddedServer';
 
 const App = () => {
   const [serverStatus, setServerStatus] = useState('Stopped');
@@ -76,56 +69,62 @@ const App = () => {
     }
   };
 
-  const logResponse = (message) => {
+  const logResponse = message => {
     const timestamp = new Date().toLocaleTimeString();
     setApiResponses(prev => [
-      {timestamp, message},
-      ...prev.slice(0, 19) // Keep last 20 responses
+      { timestamp, message },
+      ...prev.slice(0, 19), // Keep last 20 responses
     ]);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>React Native + Express.js PoC</Text>
-      
+
       <View style={styles.statusContainer}>
         <Text style={styles.statusLabel}>Server Status:</Text>
-        <Text style={[
-          styles.statusText,
-          {color: serverStatus.includes('Running') ? '#4CAF50' : '#FF5722'}
-        ]}>
+        <Text
+          style={[
+            styles.statusText,
+            { color: serverStatus.includes('Running') ? '#4CAF50' : '#FF5722' },
+          ]}
+        >
           {serverStatus}
         </Text>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.startButton]}
           onPress={startServer}
-          disabled={serverStatus.includes('Running')}>
+          disabled={serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Start Server</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.stopButton]}
           onPress={stopServer}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Stop Server</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testHealthEndpoint}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Test /health</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testStateEndpoint}
-          disabled={!serverStatus.includes('Running')}>
+          disabled={!serverStatus.includes('Running')}
+        >
           <Text style={styles.buttonText}>Test /state</Text>
         </TouchableOpacity>
       </View>
@@ -165,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,

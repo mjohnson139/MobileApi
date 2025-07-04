@@ -101,7 +101,7 @@ const devicesSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    sync: (state) => {
+    sync: state => {
       state.lastSync = new Date().toISOString();
     },
   },
