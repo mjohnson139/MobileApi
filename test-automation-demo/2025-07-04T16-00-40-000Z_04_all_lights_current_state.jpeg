@@ -1,0 +1,19 @@
+DEMO SCREENSHOT (JPEG FORMAT)
+=============================
+
+All Lights Control Panel
+
+Living Room: ON (yellow)
+Kitchen: OFF (gray)
+Bedroom: OFF (gray)
+
+This shows the current state before the "all lights" toggle operation
+
+Filename: 2025-07-04T16-00-40-000Z_04_all_lights_current_state.jpeg
+Format: JPEG
+Timestamp: 2025-07-04T16:59:42.486Z
+Mobile API Control Pattern Demo
+
+Note: This is a placeholder demonstrating the screenshot capture functionality.
+In a real implementation, this would contain the actual JPEG image data
+captured from the mobile application interface.

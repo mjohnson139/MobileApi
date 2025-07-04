@@ -1,0 +1,17 @@
+DEMO SCREENSHOT (JPEG FORMAT)
+=============================
+
+Mobile API Control App - User Authenticated
+✓ API Server: Online
+✓ Dashboard Ready
+
+This screenshot shows the app after successful API authentication via POST /auth/login
+
+Filename: 2025-07-04T16-00-00-000Z_01_authenticated_state.jpeg
+Format: JPEG
+Timestamp: 2025-07-04T16:59:42.484Z
+Mobile API Control Pattern Demo
+
+Note: This is a placeholder demonstrating the screenshot capture functionality.
+In a real implementation, this would contain the actual JPEG image data
+captured from the mobile application interface.

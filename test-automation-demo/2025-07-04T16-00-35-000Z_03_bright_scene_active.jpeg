@@ -1,0 +1,22 @@
+DEMO SCREENSHOT (JPEG FORMAT)
+=============================
+
+Scene Control Panel - Bright Scene Active
+
+Active Scene: Bright (highlighted in yellow)
+
+[Movie Night] [Bright*] [Party] [Sleep]
+
+All Lights: 100% brightness
+Color: Cool white
+
+Result of API command: POST /api/actions/trigger {"target": "bright-scene"}
+
+Filename: 2025-07-04T16-00-35-000Z_03_bright_scene_active.jpeg
+Format: JPEG
+Timestamp: 2025-07-04T16:59:42.486Z
+Mobile API Control Pattern Demo
+
+Note: This is a placeholder demonstrating the screenshot capture functionality.
+In a real implementation, this would contain the actual JPEG image data
+captured from the mobile application interface.
