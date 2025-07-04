@@ -1,0 +1,25 @@
+{
+  "name": "redux-state-poc",
+  "version": "1.0.0",
+  "description": "Proof of concept for Redux state management with API synchronization",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest",
+    "benchmark": "node benchmarks/redux-performance.js"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.7",
+    "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
