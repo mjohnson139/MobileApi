@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface DeviceState {
+export interface DeviceState {
   id: string;
   name: string;
   type: 'switch' | 'dimmer' | 'temperature' | 'sensor';
@@ -10,7 +10,7 @@ interface DeviceState {
   isOnline: boolean;
 }
 
-interface DevicesState {
+export interface DevicesState {
   devices: Record<string, DeviceState>;
   selectedDevice: string | null;
   isLoading: boolean;

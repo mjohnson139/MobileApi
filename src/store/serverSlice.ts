@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface ServerState {
+export interface ServerState {
   isRunning: boolean;
   port: number;
   startTime: number | null;

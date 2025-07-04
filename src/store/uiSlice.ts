@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UIState {
+export interface UIState {
   currentScreen: string;
   controls: Record<string, any>;
   navigation: {
