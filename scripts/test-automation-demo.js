@@ -68,7 +68,7 @@ async function runTestAutomation() {
           value: 'on',
         }),
       });
-      const updateData = await updateResponse.json();
+      await updateResponse.json();
       console.log(`   ✅ ${updateResponse.status} - Light state updated`);
 
       // Test 5: Execute Action
@@ -84,7 +84,7 @@ async function runTestAutomation() {
           payload: { state: 'off' },
         }),
       });
-      const actionData = await actionResponse.json();
+      await actionResponse.json();
       console.log(`   ✅ ${actionResponse.status} - Action executed`);
 
       // Test 6: Screenshot
