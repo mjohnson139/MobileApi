@@ -11,19 +11,6 @@ import authRoutes from './auth/authRoutes';
 import { setupAPIRoutes } from './routes/apiRoutes';
 import { requestLogger, createRateLimiter } from './middleware/auth';
 
-// Conditionally import compression only in Node.js environments
-let compression: any = null;
-try {
-  // Only import compression if we're in a Node.js environment
-  if (typeof process !== 'undefined' && process.versions && process.versions.node) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    compression = require('compression');
-  }
-} catch {
-  // Silently fail in React Native environment
-  compression = null;
-}
-
 export class EmbeddedServer {
   private app: Express;
   private server: any;
@@ -34,6 +21,7 @@ export class EmbeddedServer {
   private requestCount: number = 0;
   private errorCount: number = 0;
   private metrics: RequestMetric[] = [];
+  private compression: any = null;
 
   constructor(store: Store, port?: number) {
     // Validate configuration
@@ -43,9 +31,25 @@ export class EmbeddedServer {
     this.port = port || serverConfig.port;
     this.app = express();
 
+    this.loadOptionalModules();
     this.initializeMiddleware();
     this.initializeRoutes();
     this.initializeErrorHandling();
+  }
+
+  private loadOptionalModules(): void {
+    // Conditionally load compression only in Node.js environments
+    try {
+      // Only load compression if we're in a Node.js environment
+      if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+        // Use dynamic import to avoid static bundling
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        this.compression = require('compression');
+      }
+    } catch {
+      // Silently fail in React Native environment
+      this.compression = null;
+    }
   }
 
   private initializeMiddleware(): void {
@@ -66,8 +70,8 @@ export class EmbeddedServer {
     );
 
     // Compression and parsing (only use compression in Node.js environments)
-    if (compression) {
-      this.app.use(compression());
+    if (this.compression) {
+      this.app.use(this.compression());
     }
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));

@@ -12,4 +12,9 @@ config.resolver.alias = {
   '@/utils': './src/utils',
 };
 
+// Exclude Node.js-specific modules from React Native bundle
+config.resolver.blockList = [
+  /node_modules\/compression\/.*/,
+];
+
 module.exports = config;
