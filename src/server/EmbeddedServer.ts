@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import compression from 'compression';
 import morgan from 'morgan';
 import { Store } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,6 +10,19 @@ import { ServerState, RequestMetric, HealthResponse } from '../types';
 import authRoutes from './auth/authRoutes';
 import { setupAPIRoutes } from './routes/apiRoutes';
 import { requestLogger, createRateLimiter } from './middleware/auth';
+
+// Conditionally import compression only in Node.js environments
+let compression: any = null;
+try {
+  // Only import compression if we're in a Node.js environment
+  if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    compression = require('compression');
+  }
+} catch {
+  // Silently fail in React Native environment
+  compression = null;
+}
 
 export class EmbeddedServer {
   private app: Express;
@@ -53,8 +65,10 @@ export class EmbeddedServer {
       }),
     );
 
-    // Compression and parsing
-    this.app.use(compression());
+    // Compression and parsing (only use compression in Node.js environments)
+    if (compression) {
+      this.app.use(compression());
+    }
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 

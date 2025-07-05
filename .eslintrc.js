@@ -4,6 +4,7 @@ module.exports = {
     'expo',
     '@react-native',
   ],
+  plugins: ['jest'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react-native/no-unused-styles': 'error',
@@ -14,6 +15,7 @@ module.exports = {
   env: {
     node: true,
     jest: true,
+    'jest/globals': true,
   },
   ignorePatterns: [
     'node_modules/',
