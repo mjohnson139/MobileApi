@@ -56,7 +56,7 @@ export class AuthService {
         iat: decoded.iat,
         exp: decoded.exp,
       };
-    } catch (error) {
+    } catch {
       throw new Error('Invalid token');
     }
   }
@@ -114,7 +114,7 @@ export class AuthService {
         return true;
       }
       return Date.now() >= decoded.exp * 1000;
-    } catch (error) {
+    } catch {
       return true;
     }
   }

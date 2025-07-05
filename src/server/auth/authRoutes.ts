@@ -123,7 +123,7 @@ router.post('/validate', (req: Request, res: Response): void => {
         expires_at: user.exp,
         timestamp: new Date().toISOString(),
       });
-    } catch (verifyError) {
+    } catch {
       res.status(401).json({
         valid: false,
         error: 'Invalid token',
@@ -131,7 +131,7 @@ router.post('/validate', (req: Request, res: Response): void => {
         timestamp: new Date().toISOString(),
       });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: 'Validation error',
       message: 'Internal server error during token validation',
@@ -173,7 +173,7 @@ router.post('/refresh', (req: Request, res: Response): void => {
       scope: newAuthToken.scope.join(' '),
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch {
     res.status(401).json({
       error: 'Token refresh failed',
       message: 'Current token is invalid or expired',
@@ -210,7 +210,7 @@ router.get('/me', (req: Request, res: Response): void => {
       is_expired: AuthService.isTokenExpired(token),
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch {
     res.status(401).json({
       error: 'Invalid token',
       message: 'Authentication token is invalid',

@@ -106,7 +106,9 @@ async function runDemo() {
 
       if (actionResponse.status === 200) {
         console.log('✅ Action executed successfully');
-        console.log(`   Action: ${actionResponse.data.action.type} on ${actionResponse.data.action.target}\n`);
+        console.log(
+          `   Action: ${actionResponse.data.action.type} on ${actionResponse.data.action.target}\n`,
+        );
       }
 
       // Test screenshot
@@ -121,7 +123,9 @@ async function runDemo() {
       if (screenshotResponse.status === 200) {
         console.log('✅ Screenshot captured successfully');
         console.log(`   Format: ${screenshotResponse.data.format}`);
-        console.log(`   Size: ${screenshotResponse.data.metadata.width}x${screenshotResponse.data.metadata.height}`);
+        console.log(
+          `   Size: ${screenshotResponse.data.metadata.width}x${screenshotResponse.data.metadata.height}`,
+        );
         console.log(`   Data length: ${screenshotResponse.data.imageData.length} characters\n`);
       }
 
@@ -135,7 +139,11 @@ async function runDemo() {
         console.log('✅ Metrics retrieved successfully');
         console.log(`   Requests handled: ${metricsResponse.data.server_metrics.requests_handled}`);
         console.log(`   Error count: ${metricsResponse.data.server_metrics.error_count}`);
-        console.log(`   Average response time: ${metricsResponse.data.server_metrics.average_response_time.toFixed(2)}ms\n`);
+        console.log(
+          `   Average response time: ${metricsResponse.data.server_metrics.average_response_time.toFixed(
+            2,
+          )}ms\n`,
+        );
       }
     } else {
       console.log('❌ Authentication failed');

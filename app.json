@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Mobile API Control Panel",
+    "slug": "mobile-api-control-panel",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "mobile-api-control-panel",
+    "sdkVersion": "53.0.0",
+    "platforms": ["ios", "android", "web"]
+  }
+}
