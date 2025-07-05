@@ -128,7 +128,76 @@ See [Smart Home Control Panel Documentation](docs/smart-home-control-panel.md) f
 
 ## Getting Started
 
-*Implementation details will be added as development progresses.*
+### Quick Start with Expo SDK 53
+
+This project now uses **Expo SDK 53** for a clean and easy installation process.
+
+#### Prerequisites
+- Node.js 18 or higher
+- npm or yarn package manager
+
+#### Installation & Running
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd MobileApi
+
+# Install dependencies
+npm install
+
+# Validate the setup (lint, type-check, test)
+npm run validate
+
+# Start the development server
+npm run start
+```
+
+#### Platform-Specific Commands
+
+```bash
+# Start for Android
+npm run android
+
+# Start for iOS  
+npm run ios
+
+# Start for Web
+npm run web
+```
+
+#### Development Tools
+
+```bash
+# Run tests
+npm run test
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+
+# Full validation
+npm run validate
+```
+
+### Migration to Expo SDK 53
+
+This project has been upgraded from React Native CLI to **Expo SDK 53**. See the [Expo SDK 53 Migration Guide](docs/expo-sdk-53-migration.md) for detailed information about:
+
+- Updated dependencies and configuration
+- New development workflow
+- Platform support improvements
+- Performance enhancements
+
+### Features Available
+
+- **Cross-Platform**: Native support for iOS, Android, and Web
+- **Smart Home Control Panel**: Complete device management interface
+- **Embedded API Server**: Express.js server for external automation
+- **Performance Monitoring**: Real-time API metrics and tracking
+- **Redux State Management**: Centralized state with dual-interface sync
 
 ## Contributing
 
