@@ -299,7 +299,7 @@ async function runHealthAndStateVerification() {
  * Execute API command with curl and validate response
  */
 async function executeAPICommand(method, endpoint, data, testName) {
-  const startTime = Date.now();
+  const requestStartTime = Date.now();
 
   try {
     console.log(`   🔄 ${method} ${endpoint}`);
@@ -326,7 +326,7 @@ async function executeAPICommand(method, endpoint, data, testName) {
     // Make the request
     const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, options);
     const responseData = await response.json();
-    const duration = Date.now() - startTime;
+    const duration = Date.now() - requestStartTime;
 
     const result = {
       testName,
@@ -352,7 +352,7 @@ async function executeAPICommand(method, endpoint, data, testName) {
 
     return result;
   } catch (error) {
-    const duration = Date.now() - startTime;
+    const duration = Date.now() - requestStartTime;
     const result = {
       testName,
       method,
