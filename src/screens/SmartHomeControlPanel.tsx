@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { executeToggleAction, executeSetAction, DeviceState } from '../store/devicesSlice';
 import DeviceCard from '../components/device/DeviceCard';
+import { colors } from '../constants/colors';
 
 interface SmartHomeControlPanelProps {
   onApiCall?: (endpoint: string, duration: number) => void;
@@ -139,7 +140,7 @@ const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall
           <View
             style={[
               styles.serverIndicator,
-              { backgroundColor: serverStatus === 'running' ? '#4CAF50' : '#FF5722' },
+              serverStatus === 'running' ? styles.serverRunning : styles.serverStopped,
             ]}
           />
         </View>
@@ -231,13 +232,13 @@ const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 20,
     paddingTop: 60,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#333',
+    color: colors.darkGray,
     marginBottom: 8,
   },
   statusContainer: {
@@ -256,12 +257,18 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    color: '#666',
+    color: colors.mediumGray,
   },
   serverIndicator: {
     width: 10,
     height: 10,
     borderRadius: 5,
+  },
+  serverRunning: {
+    backgroundColor: colors.success,
+  },
+  serverStopped: {
+    backgroundColor: colors.error,
   },
   section: {
     marginTop: 20,
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: colors.darkGray,
     marginLeft: 16,
     marginBottom: 12,
   },
@@ -285,14 +292,14 @@ const styles = StyleSheet.create({
   },
   quickActionButton: {
     flex: 1,
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 8,
     marginHorizontal: 4,
     alignItems: 'center',
   },
   quickActionText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -8,6 +8,8 @@ import ServerControlPanel from './screens/ServerControlPanel';
 import SmartHomeControlPanel from './screens/SmartHomeControlPanel';
 import PerformanceMonitor from './components/ui/PerformanceMonitor';
 
+import { colors } from './constants/colors';
+
 interface ApiCall {
   endpoint: string;
   duration: number;
@@ -20,7 +22,7 @@ const App: React.FC = () => {
   const [serverPort] = React.useState(8080);
   const [activeTab, setActiveTab] = React.useState<'server' | 'smarthome'>('smarthome');
   const [apiResponses, setApiResponses] = React.useState<
-    Array<{ timestamp: string; message: string }>
+    { timestamp: string; message: string }[]
   >([]);
   const [apiCalls, setApiCalls] = React.useState<ApiCall[]>([]);
   const [embeddedServer, setEmbeddedServer] = React.useState<EmbeddedServer | null>(null);
@@ -102,7 +104,7 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.lightGray,
   },
 });
 

@@ -143,7 +143,8 @@ async function runAuthenticationFlow() {
       username: CONFIG.USERNAME,
       password: CONFIG.PASSWORD,
     },
-    '01_authentication_login',
+    '01_authentication_login'
+  );
 
   if (loginResult.success && loginResult.responseData.token) {
     authToken = loginResult.responseData.token;
@@ -173,7 +174,8 @@ async function runLightControlTests() {
       path: 'ui.controls.living_room_light.state',
       value: 'on',
     },
-    '02_living_room_light_on',
+    '02_living_room_light_on'
+  );
 
   await captureScreenshot('02_living_room_light_turned_on');
 
@@ -185,7 +187,8 @@ async function runLightControlTests() {
       path: 'ui.controls.living_room_light.brightness',
       value: 75,
     },
-    '02_living_room_light_brightness_75',
+    '02_living_room_light_brightness_75'
+  );
 
   await captureScreenshot('02_living_room_light_dimmed');
 
@@ -220,7 +223,8 @@ async function runSceneControlTests() {
       target: 'movie-night-scene',
       payload: { sceneId: 'movie-night' },
     },
-    '03_activate_movie_night_scene',
+    '03_activate_movie_night_scene'
+  );
 
   await captureScreenshot('03_movie_night_scene_active');
 
@@ -232,7 +236,8 @@ async function runSceneControlTests() {
       target: 'bright-scene',
       payload: { sceneId: 'bright' },
     },
-    '03_activate_bright_scene',
+    '03_activate_bright_scene'
+  );
 
   await captureScreenshot('03_bright_scene_active');
 }
@@ -267,7 +272,8 @@ async function runMultipleLightControlTests() {
       target: 'all_lights',
       payload: { state: 'off' },
     },
-    '04_turn_off_all_lights',
+    '04_turn_off_all_lights'
+  );
 
   await captureScreenshot('04_all_lights_off');
 }
@@ -388,7 +394,8 @@ async function captureScreenshot(description) {
               'Authorization': `Bearer ${authToken}`,
             },
             timeout: CONFIG.TIMEOUT,
-          },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();

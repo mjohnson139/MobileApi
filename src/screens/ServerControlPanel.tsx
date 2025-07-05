@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { EmbeddedServer } from '../server/EmbeddedServer';
+import { colors } from '../constants/colors';
 
 interface ServerControlPanelProps {
   embeddedServer: EmbeddedServer | null;
@@ -8,7 +9,7 @@ interface ServerControlPanelProps {
   serverPort: number;
   onServerStatusChange: (status: string) => void;
   onApiCall: (endpoint: string, duration: number) => void;
-  apiResponses: Array<{ timestamp: string; message: string }>;
+  apiResponses: { timestamp: string; message: string }[];
   onLogResponse: (message: string) => void;
 }
 
@@ -150,7 +151,7 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
         <Text
           style={[
             styles.statusText,
-            { color: serverStatus.includes('Running') ? '#4CAF50' : '#FF5722' },
+            serverStatus.includes('Running') ? styles.statusRunning : styles.statusStopped,
           ]}
         >
           {serverStatus}
@@ -219,7 +220,7 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.lightGray,
     padding: 20,
     paddingTop: 20,
   },
@@ -228,16 +229,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#333',
+    color: colors.darkGray,
   },
   statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -246,12 +247,18 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.darkGray,
   },
   statusText: {
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+  },
+  statusRunning: {
+    color: colors.success,
+  },
+  statusStopped: {
+    color: colors.error,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -266,16 +273,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   startButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.success,
   },
   stopButton: {
-    backgroundColor: '#FF5722',
+    backgroundColor: colors.error,
   },
   testButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.primary,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -283,14 +290,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
-    color: '#333',
+    color: colors.darkGray,
   },
   responseContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
     padding: 10,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -299,16 +306,16 @@ const styles = StyleSheet.create({
   responseItem: {
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.borderGray,
   },
   responseTime: {
     fontSize: 12,
-    color: '#666',
+    color: colors.mediumGray,
     fontFamily: 'monospace',
   },
   responseMessage: {
     fontSize: 14,
-    color: '#333',
+    color: colors.darkGray,
     fontFamily: 'monospace',
     marginTop: 2,
   },

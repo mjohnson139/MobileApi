@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { colors } from '../../constants/colors';
 
 interface ApiCall {
   endpoint: string;
@@ -37,7 +38,10 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({ apiCalls }) => 
 
         <View style={styles.metric}>
           <Text
-            style={[styles.metricValue, { color: slowCalls.length > 0 ? '#FF5722' : '#4CAF50' }]}
+            style={[
+              styles.metricValue,
+              slowCalls.length > 0 ? styles.slowCallsText : styles.fastCallsText,
+            ]}
           >
             {slowCalls.length}
           </Text>
@@ -52,7 +56,10 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({ apiCalls }) => 
             <View style={styles.callHeader}>
               <Text style={styles.endpoint}>{call.endpoint}</Text>
               <Text
-                style={[styles.duration, { color: call.duration > 1000 ? '#FF5722' : '#4CAF50' }]}
+                style={[
+                  styles.duration,
+                  call.duration > 1000 ? styles.slowCallsText : styles.fastCallsText,
+                ]}
               >
                 {call.duration}ms
               </Text>
@@ -67,11 +74,11 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({ apiCalls }) => 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 8,
     margin: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.darkGray,
     marginBottom: 16,
   },
   metricsContainer: {
@@ -94,17 +101,17 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2196F3',
+    color: colors.primary,
   },
   metricLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.mediumGray,
     marginTop: 4,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.darkGray,
     marginBottom: 12,
   },
   callsList: {
@@ -113,7 +120,7 @@ const styles = StyleSheet.create({
   callItem: {
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.borderGray,
   },
   callHeader: {
     flexDirection: 'row',
@@ -122,16 +129,22 @@ const styles = StyleSheet.create({
   },
   endpoint: {
     fontSize: 14,
-    color: '#333',
+    color: colors.darkGray,
     fontFamily: 'monospace',
   },
   duration: {
     fontSize: 14,
     fontWeight: '600',
   },
+  slowCallsText: {
+    color: colors.error,
+  },
+  fastCallsText: {
+    color: colors.success,
+  },
   timestamp: {
     fontSize: 12,
-    color: '#666',
+    color: colors.mediumGray,
     marginTop: 2,
   },
 });

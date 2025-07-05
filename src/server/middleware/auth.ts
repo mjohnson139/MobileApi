@@ -45,7 +45,7 @@ export function authenticateAPI(req: Request, res: Response, next: NextFunction)
     // Attach user to request object
     req.user = user;
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({
       error: 'Invalid token',
       message: 'Authentication token is invalid or malformed.',

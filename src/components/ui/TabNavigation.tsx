@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { colors } from '../../constants/colors';
 
 interface TabNavigationProps {
   activeTab: 'server' | 'smarthome';
@@ -33,27 +34,27 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange })
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.borderGray,
   },
   tab: {
     flex: 1,
     paddingVertical: 16,
     alignItems: 'center',
     borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
+    borderBottomColor: colors.transparent,
   },
   activeTab: {
-    borderBottomColor: '#2196F3',
+    borderBottomColor: colors.primary,
   },
   tabText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#666',
+    color: colors.mediumGray,
   },
   activeTabText: {
-    color: '#2196F3',
+    color: colors.primary,
     fontWeight: '600',
   },
 });

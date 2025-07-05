@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DeviceState } from '../../store/devicesSlice';
+import { colors } from '../../constants/colors';
 
 interface DeviceCardProps {
   device: DeviceState;
@@ -11,9 +12,9 @@ interface DeviceCardProps {
 const DeviceCard: React.FC<DeviceCardProps> = ({ device, onToggle }) => {
   const getStatusColor = () => {
     if (!device.isOnline) {
-      return '#999';
+      return colors.textGray;
     }
-    return device.state === 'on' ? '#4CAF50' : '#666';
+    return device.state === 'on' ? colors.success : colors.mediumGray;
   };
 
   const renderDeviceControl = () => {
@@ -23,7 +24,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onToggle }) => {
           <TouchableOpacity
             style={[
               styles.switchButton,
-              { backgroundColor: device.state === 'on' ? '#4CAF50' : '#ccc' },
+              device.state === 'on' ? styles.switchButtonOn : styles.switchButtonOff,
             ]}
             onPress={onToggle}
             disabled={!device.isOnline}
@@ -38,7 +39,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onToggle }) => {
             <TouchableOpacity
               style={[
                 styles.switchButton,
-                { backgroundColor: device.state === 'on' ? '#4CAF50' : '#ccc' },
+                device.state === 'on' ? styles.switchButtonOn : styles.switchButtonOff,
               ]}
               onPress={onToggle}
               disabled={!device.isOnline}
@@ -82,11 +83,11 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onToggle }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
     margin: 8,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   deviceName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: colors.darkGray,
     flex: 1,
   },
   statusIndicator: {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
   },
   deviceType: {
     fontSize: 12,
-    color: '#666',
+    color: colors.mediumGray,
     marginBottom: 16,
     fontWeight: '500',
   },
@@ -129,8 +130,14 @@ const styles = StyleSheet.create({
     minWidth: 80,
     alignItems: 'center',
   },
+  switchButtonOn: {
+    backgroundColor: colors.success,
+  },
+  switchButtonOff: {
+    backgroundColor: colors.gray,
+  },
   switchText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -139,7 +146,7 @@ const styles = StyleSheet.create({
   },
   dimmerValue: {
     fontSize: 16,
-    color: '#333',
+    color: colors.darkGray,
     marginTop: 8,
     fontWeight: '500',
   },
@@ -149,21 +156,21 @@ const styles = StyleSheet.create({
   temperatureValue: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2196F3',
+    color: colors.primary,
   },
   temperatureLabel: {
     fontSize: 12,
-    color: '#666',
+    color: colors.mediumGray,
     marginTop: 4,
   },
   unknownType: {
     fontSize: 14,
-    color: '#999',
+    color: colors.textGray,
     fontStyle: 'italic',
   },
   lastUpdated: {
     fontSize: 10,
-    color: '#999',
+    color: colors.textGray,
     textAlign: 'center',
   },
 });
