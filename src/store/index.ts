@@ -2,6 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import serverReducer from './serverSlice';
 import uiReducer from './uiSlice';
 import devicesReducer from './devicesSlice';
+import { webSocketClient } from '../websocket/WebSocketClient';
+import { createWebSocketMiddleware, websocketReducer } from '../websocket/WebSocketMiddleware';
 
 // Custom middleware to handle state updates by path
 const pathUpdateMiddleware = (store: any) => (next: any) => (action: any) => {
@@ -69,18 +71,25 @@ const pathUpdateMiddleware = (store: any) => (next: any) => (action: any) => {
   return next(action);
 };
 
+// Create WebSocket middleware
+const websocketMiddleware = createWebSocketMiddleware(webSocketClient, {
+  autoConnect: false, // We'll connect manually when needed
+  url: 'ws://localhost:8080',
+});
+
 export const store = configureStore({
   reducer: {
     server: serverReducer,
     ui: uiReducer,
     devices: devicesReducer,
+    websocket: websocketReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
       },
-    }).concat(pathUpdateMiddleware),
+    }).concat(pathUpdateMiddleware).concat(websocketMiddleware as any),
   devTools: process.env.NODE_ENV === 'development',
 });
 

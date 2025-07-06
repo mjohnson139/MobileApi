@@ -1,23 +1,25 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { EmbeddedServer } from '../server/EmbeddedServer';
+import { WebSocketClient } from '../websocket/WebSocketClient';
 import { colors } from '../constants/colors';
 
 interface ServerControlPanelProps {
-  embeddedServer: EmbeddedServer | null;
+  webSocketClient: WebSocketClient;
   serverStatus: string;
-  serverPort: number;
-  onServerStatusChange: (status: string) => void;
+  onServerStart: () => Promise<void>;
+  onServerStop: () => void;
+  onLogin: (username: string, password: string) => Promise<void>;
   onApiCall: (endpoint: string, duration: number) => void;
   apiResponses: { timestamp: string; message: string }[];
   onLogResponse: (message: string) => void;
 }
 
 const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
-  embeddedServer,
+  webSocketClient,
   serverStatus,
-  serverPort,
-  onServerStatusChange,
+  onServerStart,
+  onServerStop,
+  onLogin,
   onApiCall,
   apiResponses,
   onLogResponse,
@@ -37,42 +39,34 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
   };
 
   const startServer = async () => {
-    if (!embeddedServer) {
-      return;
-    }
-
     try {
-      onServerStatusChange('Starting...');
-      await embeddedServer.start();
-      onServerStatusChange(`Running on port ${serverPort}`);
-      onLogResponse('Server started successfully');
+      await onServerStart();
     } catch (error) {
-      onServerStatusChange('Failed to start');
-      Alert.alert('Error', `Failed to start server: ${(error as Error).message}`);
+      Alert.alert('Error', `Failed to connect to server: ${(error as Error).message}`);
     }
   };
 
   const stopServer = async () => {
-    if (!embeddedServer) {
-      return;
-    }
-
     try {
-      onServerStatusChange('Stopping...');
-      await embeddedServer.stop();
-      onServerStatusChange('Stopped');
-      onLogResponse('Server stopped');
+      onServerStop();
     } catch (error) {
-      Alert.alert('Error', `Failed to stop server: ${(error as Error).message}`);
+      Alert.alert('Error', `Failed to disconnect: ${(error as Error).message}`);
+    }
+  };
+
+  const loginToServer = async () => {
+    try {
+      await onLogin('api_user', 'mobile_api_password');
+    } catch (error) {
+      Alert.alert('Login Error', `Failed to login: ${(error as Error).message}`);
     }
   };
 
   const testHealthEndpoint = async () => {
     try {
       const data = await trackApiCall(async () => {
-        const response = await fetch(`http://localhost:${serverPort}/health`);
-        return response.json();
-      }, '/health');
+        return await webSocketClient.getHealth();
+      }, 'health');
 
       onLogResponse(`Health check: ${JSON.stringify(data, null, 2)}`);
     } catch (error) {
@@ -83,18 +77,8 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
   const testAuthEndpoint = async () => {
     try {
       const data = await trackApiCall(async () => {
-        const response = await fetch(`http://localhost:${serverPort}/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: 'api_user',
-            password: 'mobile_api_password',
-          }),
-        });
-        return response.json();
-      }, '/auth/login');
+        return await webSocketClient.login('test_user', 'test_password');
+      }, 'auth/login');
 
       onLogResponse(`Auth test: ${JSON.stringify(data, null, 2)}`);
     } catch (error) {
@@ -104,41 +88,61 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
 
   const testStateEndpoint = async () => {
     try {
-      // First login to get token
-      const authData = await trackApiCall(async () => {
-        const authResponse = await fetch(`http://localhost:${serverPort}/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: 'api_user',
-            password: 'mobile_api_password',
-          }),
-        });
-
-        if (!authResponse.ok) {
-          throw new Error('Authentication failed');
-        }
-
-        return authResponse.json();
-      }, '/auth/login');
-
-      const token = authData.token;
-
-      // Now test state endpoint
       const data = await trackApiCall(async () => {
-        const response = await fetch(`http://localhost:${serverPort}/api/state`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return response.json();
-      }, '/api/state');
+        return await webSocketClient.getState();
+      }, 'state');
 
       onLogResponse(`State: ${JSON.stringify(data, null, 2)}`);
     } catch (error) {
       onLogResponse(`State request failed: ${(error as Error).message}`);
+    }
+  };
+
+  const testUpdateStateEndpoint = async () => {
+    try {
+      const data = await trackApiCall(async () => {
+        return await webSocketClient.updateState('ui_state.controls.living_room_light.state.power', 'on');
+      }, 'updateState');
+
+      onLogResponse(`State update: ${JSON.stringify(data, null, 2)}`);
+    } catch (error) {
+      onLogResponse(`State update failed: ${(error as Error).message}`);
+    }
+  };
+
+  const testActionEndpoint = async () => {
+    try {
+      const data = await trackApiCall(async () => {
+        return await webSocketClient.executeAction('device_control', 'living_room_light', { power: 'on' });
+      }, 'executeAction');
+
+      onLogResponse(`Action executed: ${JSON.stringify(data, null, 2)}`);
+    } catch (error) {
+      onLogResponse(`Action failed: ${(error as Error).message}`);
+    }
+  };
+
+  const testScreenshotEndpoint = async () => {
+    try {
+      const data = await trackApiCall(async () => {
+        return await webSocketClient.captureScreenshot({ format: 'png', quality: 0.8 });
+      }, 'screenshot');
+
+      onLogResponse(`Screenshot captured: ${data.format} (${data.metadata.size} bytes)`);
+    } catch (error) {
+      onLogResponse(`Screenshot failed: ${(error as Error).message}`);
+    }
+  };
+
+  const testMetricsEndpoint = async () => {
+    try {
+      const data = await trackApiCall(async () => {
+        return await webSocketClient.getMetrics();
+      }, 'metrics');
+
+      onLogResponse(`Metrics: ${JSON.stringify(data, null, 2)}`);
+    } catch (error) {
+      onLogResponse(`Metrics request failed: ${(error as Error).message}`);
     }
   };
 
@@ -162,17 +166,27 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
         <TouchableOpacity
           style={[styles.button, styles.startButton]}
           onPress={startServer}
-          disabled={serverStatus.includes('Running')}
+          disabled={serverStatus.includes('Running') || serverStatus.includes('Connected')}
         >
-          <Text style={styles.buttonText}>Start Server</Text>
+          <Text style={styles.buttonText}>Connect</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, styles.stopButton]}
           onPress={stopServer}
-          disabled={!serverStatus.includes('Running')}
+          disabled={serverStatus === 'Stopped'}
         >
-          <Text style={styles.buttonText}>Stop Server</Text>
+          <Text style={styles.buttonText}>Disconnect</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.authButton]}
+          onPress={loginToServer}
+          disabled={!webSocketClient.isConnected() || webSocketClient.isAuthenticated()}
+        >
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
       </View>
 
@@ -180,17 +194,17 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
         <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testHealthEndpoint}
-          disabled={!serverStatus.includes('Running')}
+          disabled={!webSocketClient.isConnected()}
         >
-          <Text style={styles.buttonText}>Test /health</Text>
+          <Text style={styles.buttonText}>Test Health</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testAuthEndpoint}
-          disabled={!serverStatus.includes('Running')}
+          disabled={!webSocketClient.isConnected()}
         >
-          <Text style={styles.buttonText}>Test /auth</Text>
+          <Text style={styles.buttonText}>Test Auth</Text>
         </TouchableOpacity>
       </View>
 
@@ -198,9 +212,45 @@ const ServerControlPanel: React.FC<ServerControlPanelProps> = ({
         <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testStateEndpoint}
-          disabled={!serverStatus.includes('Running')}
+          disabled={!webSocketClient.isAuthenticated()}
         >
-          <Text style={styles.buttonText}>Test /api/state</Text>
+          <Text style={styles.buttonText}>Get State</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.button, styles.testButton]}
+          onPress={testUpdateStateEndpoint}
+          disabled={!webSocketClient.isAuthenticated()}
+        >
+          <Text style={styles.buttonText}>Update State</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.testButton]}
+          onPress={testActionEndpoint}
+          disabled={!webSocketClient.isAuthenticated()}
+        >
+          <Text style={styles.buttonText}>Execute Action</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.button, styles.testButton]}
+          onPress={testScreenshotEndpoint}
+          disabled={!webSocketClient.isAuthenticated()}
+        >
+          <Text style={styles.buttonText}>Screenshot</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.testButton]}
+          onPress={testMetricsEndpoint}
+          disabled={!webSocketClient.isAuthenticated()}
+        >
+          <Text style={styles.buttonText}>Get Metrics</Text>
         </TouchableOpacity>
       </View>
 
@@ -277,6 +327,9 @@ const styles = StyleSheet.create({
   },
   stopButton: {
     backgroundColor: colors.error,
+  },
+  authButton: {
+    backgroundColor: colors.warning,
   },
   testButton: {
     backgroundColor: colors.primary,
