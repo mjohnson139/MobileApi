@@ -44,7 +44,27 @@ const USERS = {
   'test_user': '$2a$10$AhLdMPtl77p/jeoT1lyiruxiFXLAJmrvOziCj/rD7/dlgXCGBaslK', // bcrypt hash of 'test_password'
 };
 
-// Application state storage
+// Application state storage with proper typing
+interface DeviceConfig {
+  [key: string]: {
+    id: string;
+    name: string;
+    type: string;
+    state: any;
+    capabilities: string[];
+    online: boolean;
+  };
+}
+
+interface ControlConfig {
+  [key: string]: {
+    id: string;
+    type: string;
+    state: any;
+    label: string;
+  };
+}
+
 let appState = {
   ui_state: {
     currentScreen: 'home',
@@ -67,7 +87,7 @@ let appState = {
         state: { locked: true },
         label: 'Front Door Lock',
       },
-    },
+    } as ControlConfig,
   },
   device_state: {
     devices: {
@@ -95,7 +115,7 @@ let appState = {
         capabilities: ['lock'],
         online: true,
       },
-    },
+    } as DeviceConfig,
   },
   server_state: {
     isRunning: true,
@@ -192,8 +212,8 @@ function createResponse<T>(
     timestamp: new Date().toISOString(),
     requestId,
     success,
-    data,
-    error,
+    ...(data !== undefined && { data }),
+    ...(error !== undefined && { error }),
   };
 }
 
@@ -441,8 +461,8 @@ function handleExecuteAction(clientId: string, message: WebSocketMessage): void 
     const responseData: ExecuteActionResponsePayload = {
       action: {
         type,
-        target,
-        payload,
+        ...(target && { target }),
+        ...(payload && { payload }),
         executedAt: new Date().toISOString(),
       },
       result,

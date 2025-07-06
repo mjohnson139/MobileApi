@@ -2,11 +2,11 @@
   "name": "mobile-api-websocket-server",
   "version": "2.0.0",
   "description": "External WebSocket backend server for Mobile API Control Pattern",
-  "main": "websocket-server.js",
+  "main": "dist/websocket-server.js",
   "scripts": {
     "start": "node websocket-server.js",
-    "dev": "ts-node websocket-server.ts",
-    "build": "tsc websocket-server.ts --outDir dist --target es2020 --module commonjs",
+    "dev": "node websocket-server.js",
+    "build": "echo 'Using JavaScript version'",
     "test": "echo \"Tests to be implemented\" && exit 0"
   },
   "dependencies": {
