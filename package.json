@@ -44,7 +44,8 @@
     "react-native": "0.79.5",
     "react-native-get-random-values": "^1.11.0",
     "react-redux": "^9.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
@@ -63,6 +64,7 @@
     "@types/react-test-renderer": "^19.0.0",
     "@types/supertest": "^2.0.16",
     "@types/uuid": "^9.0.7",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "babel-jest": "^29.7.0",
@@ -113,7 +115,7 @@
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^8.35.1",
-    "@typescript-eslint/parser": "^8.35.1", 
+    "@typescript-eslint/parser": "^8.35.1",
     "@typescript-eslint/typescript-estree": "^8.35.1",
     "@typescript-eslint/utils": "^8.35.1",
     "@typescript-eslint/type-utils": "^8.35.1",
