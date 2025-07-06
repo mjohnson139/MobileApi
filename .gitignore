@@ -14,6 +14,10 @@ vendor/
 poc/*/node_modules/
 poc/*/package-lock.json
 
+# WebSocket server dependencies
+server/node_modules/
+server/dist/
+
 # IDE and editor files
 .vscode/
 .idea/

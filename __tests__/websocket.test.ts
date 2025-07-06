@@ -66,6 +66,7 @@ describe('WebSocket Server', () => {
 
   test('should accept WebSocket connections', (done) => {
     // Use Node.js WebSocket for testing since we're in Node environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const WebSocket = require('ws');
     wsClient = new WebSocket(`ws://localhost:${PORT}`);
     
@@ -80,6 +81,7 @@ describe('WebSocket Server', () => {
   });
 
   test('should handle ping/pong messages', (done) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const WebSocket = require('ws');
     const client = new WebSocket(`ws://localhost:${PORT}`);
     

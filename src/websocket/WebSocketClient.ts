@@ -175,7 +175,7 @@ export class WebSocketClient {
   public async logout(): Promise<void> {
     try {
       await this.sendMessage(WebSocketMessageType.AUTH_LOGOUT, {});
-    } catch (error) {
+    } catch {
       // Ignore logout errors
     } finally {
       this.authToken = null;

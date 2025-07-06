@@ -159,7 +159,7 @@ function verifyToken(token: string): { username: string; scope: string[] } | nul
       username: decoded.sub,
       scope: decoded.scope ? decoded.scope.split(' ') : [],
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -265,7 +265,7 @@ async function handleAuthLogin(clientId: string, message: WebSocketMessage): Pro
       responseData
     ));
     
-  } catch (error) {
+  } catch {
     sendMessage(clientId, createResponse(
       message.id,
       WebSocketMessageType.AUTH_LOGIN_RESPONSE,
@@ -387,7 +387,7 @@ function handleUpdateState(clientId: string, message: WebSocketMessage): void {
     
     broadcastMessage(stateChangeEvent, clientId);
     
-  } catch (error) {
+  } catch {
     sendMessage(clientId, createResponse(
       message.id,
       WebSocketMessageType.UPDATE_STATE_RESPONSE,
@@ -479,7 +479,7 @@ function handleCaptureScreenshot(clientId: string, message: WebSocketMessage): v
     return;
   }
   
-  const { format = 'png', quality = 0.9 } = message.payload as CaptureScreenshotPayload || {};
+  const { format = 'png' } = message.payload as CaptureScreenshotPayload || {};
   
   // Mock screenshot data (in real implementation, this would capture the actual screen)
   const mockImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAGA6fO3jAAAAABJRU5ErkJggg==';
