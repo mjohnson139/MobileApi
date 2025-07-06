@@ -7,9 +7,9 @@ const { EmbeddedServer, store } = require('../src/index.ts');
 
 async function startServer() {
   console.log('🚀 Starting Mobile API Server for Test Automation\n');
-  
+
   const server = new EmbeddedServer(store, 8080);
-  
+
   try {
     console.log('📡 Starting embedded server...');
     await server.start();
@@ -24,7 +24,7 @@ async function startServer() {
     console.log('   GET  /api/screenshot - Capture screenshot');
     console.log('   GET  /health - Health check');
     console.log('\n⏹️  Press Ctrl+C to stop the server');
-    
+
     // Keep the server running
     process.on('SIGINT', async () => {
       console.log('\n🛑 Shutting down server...');
@@ -32,10 +32,9 @@ async function startServer() {
       console.log('✅ Server stopped');
       process.exit(0);
     });
-    
+
     // Keep the process alive
     process.stdin.resume();
-    
   } catch (error) {
     console.error('❌ Failed to start server:', error.message);
     process.exit(1);
