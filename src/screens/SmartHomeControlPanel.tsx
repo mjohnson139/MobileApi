@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { executeToggleAction, executeSetAction, DeviceState } from '../store/devicesSlice';
+import { websocketActions } from '../websocket/WebSocketMiddleware';
 import DeviceCard from '../components/device/DeviceCard';
 import { colors } from '../constants/colors';
 
@@ -13,7 +14,10 @@ interface SmartHomeControlPanelProps {
 const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall }) => {
   const dispatch = useDispatch();
   const devices = useSelector((state: RootState) => state.devices.devices);
-  const serverStatus = useSelector((state: RootState) => state.server.status);
+  const websocketState = useSelector((state: RootState) => state.websocket);
+
+  // Check if WebSocket is connected and authenticated
+  const isConnected = websocketState.authenticated;
 
   // Performance monitoring
   const trackApiCall = async (apiCall: () => Promise<any>, endpoint: string) => {
@@ -35,27 +39,15 @@ const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall
       // Update local state immediately for responsive UI
       dispatch(executeToggleAction({ target: deviceId }));
 
-      // If server is running, sync with API
-      if (serverStatus === 'running') {
+      // If WebSocket is connected and authenticated, sync with API
+      if (isConnected) {
         await trackApiCall(async () => {
-          const response = await fetch('http://localhost:8080/api/actions/toggle', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${await getAuthToken()}`,
-            },
-            body: JSON.stringify({
-              target: deviceId,
-              payload: {},
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`API call failed: ${response.status}`);
-          }
-
-          return response.json();
-        }, '/api/actions/toggle');
+          // Use WebSocket action to toggle device
+          dispatch(websocketActions.executeAction('device_control', deviceId, { 
+            power: devices[deviceId]?.state === 'on' ? 'off' : 'on' 
+          }));
+          return { success: true };
+        }, 'executeAction/toggle');
       }
     } catch (error) {
       // Revert local state on API failure
@@ -74,50 +66,22 @@ const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall
         }),
       );
 
-      // Sync with API if server is running
-      if (serverStatus === 'running') {
+      // Sync with API if WebSocket is connected and authenticated
+      if (isConnected) {
         await trackApiCall(async () => {
-          const response = await fetch('http://localhost:8080/api/actions/set', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${await getAuthToken()}`,
-            },
-            body: JSON.stringify({
-              target: deviceId,
-              payload: { value: newValue },
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`API call failed: ${response.status}`);
-          }
-
-          return response.json();
-        }, '/api/actions/set');
+          // Use WebSocket action to set temperature
+          dispatch(websocketActions.executeAction('device_control', deviceId, { 
+            temperature: newValue 
+          }));
+          return { success: true };
+        }, 'executeAction/set');
       }
     } catch (error) {
       Alert.alert('Error', `Failed to update temperature: ${(error as Error).message}`);
     }
   };
 
-  // Helper function to get auth token (simplified)
-  const getAuthToken = async (): Promise<string> => {
-    try {
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: 'api_user',
-          password: 'mobile_api_password',
-        }),
-      });
-      const data = await response.json();
-      return data.token || '';
-    } catch {
-      return '';
-    }
-  };
+  // Remove the old HTTP-based getAuthToken function since we use WebSocket auth now
 
   const deviceList: DeviceState[] = Object.values(devices);
   const lightDevices = deviceList.filter(d => d.type === 'switch' || d.type === 'dimmer');
@@ -140,7 +104,7 @@ const SmartHomeControlPanel: React.FC<SmartHomeControlPanelProps> = ({ onApiCall
           <View
             style={[
               styles.serverIndicator,
-              serverStatus === 'running' ? styles.serverRunning : styles.serverStopped,
+              isConnected ? styles.serverRunning : styles.serverStopped,
             ]}
           />
         </View>
